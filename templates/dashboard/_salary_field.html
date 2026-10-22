@@ -1,0 +1,18 @@
+<div class="field salary-block">
+    <label for="{% if form %}{{ form.salary.id_for_label }}{% else %}salary{% endif %}">{{ salary_label|default:"Desired salary" }}</label>
+    <div class="salary-field">
+        <select class="salary-currency" name="salary_currency" aria-label="Salary currency">
+            {% for value, label in salary_currencies %}
+            <option value="{{ value }}"{% if value == profile.salary_currency %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" id="{% if form %}{{ form.salary.id_for_label }}{% else %}salary{% endif %}"
+               name="salary" value="{% if form %}{{ form.salary.value|default_if_none:'' }}{% else %}{{ profile.salary|default_if_none:'' }}{% endif %}"
+               inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 90000">
+        <span class="salary-suffix">/month</span>
+    </div>
+    {% if form %}
+    {% for error in form.salary.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    {% endif %}
+    <p class="field-hint">Optional. Leave blank if you'd rather not say.</p>
+</div>

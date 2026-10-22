@@ -1,0 +1,88 @@
+/* signup.html-specific overrides — the shared auth shell lives in auth.css */
+
+/* The two account types on /signup/. Plain links styled as cards -
+   there is no form on that page, so nothing here is a control. */
+.role-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 18px 0 8px;
+}
+
+.role-choice {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    align-items: center;
+    padding: 18px 20px;
+    border: 1px solid #d8dee9;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.role-choice:hover,
+.role-choice:focus-visible {
+    border-color: #e4a335;
+    box-shadow: 0 4px 14px rgba(16, 25, 43, .08);
+}
+
+.role-choice .icon {
+    grid-row: 1 / span 2;
+    width: 26px;
+    height: 26px;
+    color: #e4a335;
+}
+
+.role-choice-title {
+    font-weight: 600;
+    font-size: 1.02rem;
+}
+
+.role-choice-sub {
+    font-size: .87rem;
+    opacity: .72;
+}
+
+/* Employer signup is three stacked groups - account, company,
+   branches - in one form, so each needs a heading of its own. */
+.form-section-head {
+    margin: 22px 0 4px;
+    font-size: .95rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    opacity: .6;
+}
+
+.optional {
+    font-weight: 400;
+    font-size: .8rem;
+    opacity: .55;
+}
+
+.field-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.branch-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px dashed #d8dee9;
+}
+
+#add-branch {
+    margin-bottom: 18px;
+}
+
+@media (max-width: 540px) {
+    .field-pair,
+    .branch-row {
+        grid-template-columns: 1fr;
+    }
+}

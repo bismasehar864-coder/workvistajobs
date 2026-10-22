@@ -1,0 +1,22 @@
+# Secrets - never commit
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+venv311/
+*.egg-info/
+
+# Django
+db.sqlite3
+media/cvs/
+staticfiles/
+
+# Database dumps containing real user rows
+mysql/03_full_backup.sql
+
+# OS
+.DS_Store
+
+# Cron output
+logs/

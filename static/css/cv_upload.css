@@ -1,0 +1,54 @@
+/* cv_upload.html — dropzone specifics; shell comes from base.css .onboarding-* / .card */
+
+.dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
+  padding: 2.5rem 1.5rem;
+  cursor: pointer;
+  background: var(--mist);
+  transition: border-color 200ms var(--ease), background-color 200ms var(--ease);
+  text-align: center;
+}
+
+.dropzone:hover,
+.dropzone:focus-within {
+  border-color: var(--horizon-light);
+  background: var(--mist-deep);
+}
+
+.dropzone.has-file {
+  border-color: var(--meadow);
+  background: var(--meadow-soft);
+}
+
+.dropzone .icon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--horizon);
+  margin-bottom: 0.25rem;
+}
+
+.dropzone.has-file .icon { color: var(--meadow); }
+
+.dropzone-title { font-weight: 600; color: var(--ink); }
+.dropzone-hint { font-size: 0.82rem; color: var(--slate-soft); }
+
+.dropzone input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.file-name {
+  font-size: 0.85rem;
+  color: var(--slate-soft);
+  margin: 0.9rem 0 1.4rem;
+  text-align: center;
+}

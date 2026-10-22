@@ -1,0 +1,138 @@
+{% extends 'dashboard/base_employer.html' %}
+{% block dashboard_content %}
+
+<div class="section active" id="company">
+    <h1><svg class="icon"><use href="#icon-building"></use></svg> Company profile</h1>
+    <p class="subtitle">This is what every job you post is listed under.</p>
+
+    <div class="insight-card">
+        <div class="company-summary">
+            <div class="field">
+                <label>Company</label>
+                <p>{{ company.name }}</p>
+            </div>
+            <div class="field">
+                <label>Head office</label>
+                <p>{{ company.location }}</p>
+            </div>
+            {% if company.website %}
+            <div class="field">
+                <label>Website</label>
+                <p><a href="{{ company.website }}" target="_blank" rel="noopener">{{ company.website }}</a></p>
+            </div>
+            {% endif %}
+            {% if company.founded_year %}
+            <div class="field">
+                <label>Founded</label>
+                <p>{{ company.founded_year }}</p>
+            </div>
+            {% endif %}
+            <div class="field">
+                <label>Branches</label>
+                <p>{{ company.branches.count }} branch{{ company.branches.count|pluralize:"es" }}
+                   &middot; <a href="{% url 'employer_branches' %}" class="view-more-btn">Manage <svg class="icon"><use href="#icon-chevron-right"></use></svg></a></p>
+            </div>
+        </div>
+
+        {% if company.description %}
+        <div class="field">
+            <label>About</label>
+            <p>{{ company.description|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <h2>Edit your details</h2>
+
+    <div class="insight-card">
+        <form method="post" class="company-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="form-errors">
+                {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<p class="errorlist">{{ error }}</p>{% endfor %}
+                <p class="errorlist" data-client-error="{{ field.name }}" role="alert" aria-live="polite" hidden></p>
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-primary">Save company details</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const form = document.querySelector('.company-form');
+    const currentYear = new Date().getFullYear();
+    const patterns = {
+        name: /^[A-Za-z0-9 .&_'-]+$/,
+        location: /^[A-Za-z ,.-]+$/,
+        website: /^https?:\/\/(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}(?::\d+)?(?:[/?#][^\s]*)?$/i
+    };
+    const messages = {
+        name: 'Company name must be 2-100 characters, include a letter, and use only allowed characters.',
+        location: 'Head office location must be 2-100 characters with letters, spaces, commas, periods, and hyphens only.',
+        website: 'Enter a valid website URL starting with http:// or https:// and using a domain with a TLD.',
+        founded_year: 'Enter exactly four digits for a year between 1800 and ' + currentYear + '.',
+        description: 'About the company must be 1000 characters or fewer and contain at least one letter.'
+    };
+
+    function validate(field) {
+        const value = field.value.trim();
+        field.value = value;
+        let valid = true;
+        if (field.name === 'name') {
+            valid = value.length >= 2 && value.length <= 100
+                && /[A-Za-z]/.test(value) && patterns.name.test(value);
+        } else if (field.name === 'location') {
+            valid = value.length >= 2 && value.length <= 100
+                && patterns.location.test(value);
+        } else if (field.name === 'website') {
+            valid = !value || (!/\s/.test(value) && patterns.website.test(value));
+        } else if (field.name === 'founded_year') {
+            valid = !value || (/^\d{4}$/.test(value)
+                && Number(value) >= 1800 && Number(value) <= currentYear);
+        } else if (field.name === 'description') {
+            valid = value.length <= 1000 && (!value || /[A-Za-z]/.test(value));
+        }
+
+        const error = form.querySelector('[data-client-error="' + field.name + '"]');
+        error.textContent = valid ? '' : messages[field.name];
+        error.hidden = valid;
+        return valid;
+    }
+
+    const fields = Array.from(form.querySelectorAll('input, textarea'));
+    fields.forEach(function (field) {
+        field.addEventListener('blur', function () {
+            validate(field);
+        });
+    });
+    form.addEventListener('invalid', function (event) {
+        if (fields.includes(event.target)) {
+            validate(event.target);
+        }
+    }, true);
+    form.addEventListener('submit', function (event) {
+        const invalidFields = fields.filter(function (field) {
+            return !validate(field);
+        });
+        if (invalidFields.length) {
+            event.preventDefault();
+            invalidFields[0].focus();
+        }
+    });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+/* search_jobs.html — page shell; job cards use shared .job-card from base.css */
+
+.search-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 3rem 24px 5rem;
+}
+
+.page-header { margin-bottom: 1.8rem; }
+.page-header h1 { display: flex; align-items: center; gap: 0.6rem; }
+.page-header p { color: var(--slate-soft); }
+
+.search-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 2.2rem;
+}
+.search-box input,
+.search-box select {
+  flex: 1;
+  min-width: 160px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--mist);
+}
+.search-box input:focus,
+.search-box select:focus {
+  outline: none;
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+.search-box button { flex-shrink: 0; }
+.search-box .filter-pills { flex-basis: 100%; margin-top: 0.25rem; }
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+}

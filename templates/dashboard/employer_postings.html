@@ -1,0 +1,62 @@
+{% extends 'dashboard/base_employer.html' %}
+{% load static %}{% load job_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/post_job.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="section active" id="postings">
+
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-briefcase"></use></svg> My postings</h1>
+            <p class="subtitle">{{ my_jobs|length }} job{{ my_jobs|length|pluralize }} posted by you</p>
+        </div>
+        <a href="{% url 'post_job' %}" class="btn-primary">Post a job</a>
+    </div>
+
+    <div class="jobs-grid">
+        {% for job in my_jobs %}
+        <div class="job-card posted-job-card">
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+                <span class="job-badge {% if job.is_approved %}badge-trend{% else %}badge-hot{% endif %}">{% if job.is_approved %}Approved{% else %}Pending{% endif %}</span>
+            </div>
+                <h3>{% if job.is_approved %}<a href="{% url 'job_detail' job.id %}">{{ job.title }}</a>{% else %}{{ job.title }}{% endif %}</h3>
+            <p class="job-meta">
+                {% if job.company %}<svg class="icon"><use href="#icon-building"></use></svg> {{ job.company }} &middot; {% endif %}
+                <svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}
+            </p>
+            {% if job.branch %}<p class="job-meta"><span class="tag">{{ job.branch.name }}</span></p>{% endif %}
+            {% if job.salary_display %}<p class="job-salary">{{ job.salary_display }}</p>{% endif %}
+            <div class="job-tags">
+                <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                <span class="tag tag-source">WorkVista</span>
+            </div>
+
+            <div class="posted-job-actions">
+                <a href="{% url 'edit_posted_job' job.id %}" class="btn-outline btn-small">Edit</a>
+                <form method="post"
+                      action="{% url 'delete_posted_job' job.id %}"
+                      class="delete-post-form"
+                      onsubmit="return confirm('Delete &quot;{{ job.title|escapejs }}&quot;? This cannot be undone.');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-danger btn-small">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-briefcase"></use></svg>
+            <h3>You haven't posted a job yet</h3>
+            <p>Use <a href="{% url 'post_job' %}">Post a job</a> and your opening will appear here.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}{% load job_filters %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/saved_jobs.css' %}">
+{% endblock %}
+{% block dashboard_content %}
+
+<div class="saved-container">
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-bookmark"></use></svg> Saved jobs</h1>
+            <p class="subtitle">Jobs you've bookmarked, most recent first</p>
+        </div>
+    </div>
+    <div class="job-grid">
+        {% for job in jobs %}
+        <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+            </div>
+            <h3>{{ job.title }}</h3>
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+            <div class="job-tags">
+                <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                {% if job.company %}<span class="tag">{{ job.company }}</span>{% endif %}
+            </div>
+            <div class="saved-actions">
+                {% include "partials/apply_button.html" with button_class="btn-primary" %}
+                <form method="post" action="{% url 'toggle_save_job' job.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'saved_jobs' %}">
+                    <button type="submit" class="btn-danger"><svg class="icon"><use href="#icon-trash"></use></svg> Remove</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-bookmark"></use></svg>
+            <h3>No saved jobs yet</h3>
+            <p>Bookmark a job while browsing to see it here.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

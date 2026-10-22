@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<link rel="stylesheet" href="{% static 'css/sign_up.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-illustration">
+        {% include "partials/vista_illustration.html" %}
+        <div class="copy">
+            <h3>One account, two ways in.</h3>
+            <p>Tell us which side of the table you're on.</p>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="form-box">
+            <h2>Join WorkVista</h2>
+            <p class="subtitle">Pick the account that fits</p>
+
+            {# Plain links. Nothing is created on this page, so there is #}
+            {# no form to post and nothing to lose by going back.        #}
+            <div class="role-choices">
+                <a href="{% url 'signup_employee' %}" class="role-choice">
+                    <svg class="icon"><use href="#icon-user"></use></svg>
+                    <span class="role-choice-title">I'm looking for a job</span>
+                    <span class="role-choice-sub">Upload your CV and get matched to openings.</span>
+                </a>
+
+                <a href="{% url 'signup_employer' %}" class="role-choice">
+                    <svg class="icon"><use href="#icon-building"></use></svg>
+                    <span class="role-choice-title">I'm hiring</span>
+                    <span class="role-choice-sub">Add your company and post your openings.</span>
+                </a>
+            </div>
+
+            <p class="extra">Already have an account? <a href="{% url 'signin' %}">Sign in</a></p>
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

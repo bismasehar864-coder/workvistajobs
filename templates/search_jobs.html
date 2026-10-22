@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}{% load job_filters %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/search_jobs.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="search-container">
+    <div class="page-header">
+        <h1><svg class="icon"><use href="#icon-search"></use></svg> Find your dream job</h1>
+        <p>Search jobs based on your skills and preferences</p>
+    </div>
+
+    <form method="get" class="search-box">
+        <input type="text" name="q" placeholder="Job title, company, or keywords" value="{{ search_query }}">
+        <input type="text" name="location" placeholder="Location" value="{{ search_location }}">
+        <select name="type">
+            <option value="">Job type</option>
+            <option value="Full-time" {% if search_type == "Full-time" %}selected{% endif %}>Full-time</option>
+            <option value="Part-time" {% if search_type == "Part-time" %}selected{% endif %}>Part-time</option>
+            <option value="Remote" {% if search_type == "Remote" %}selected{% endif %}>Remote</option>
+            <option value="Contract" {% if search_type == "Contract" %}selected{% endif %}>Contract</option>
+        </select>
+        <select name="category">
+            <option value="">All categories</option>
+            {% for value, label, count in categories %}
+            <option value="{{ value }}" {% if active_category == value %}selected{% endif %}>{{ label }} ({{ count }})</option>
+            {% endfor %}
+        </select>
+        <select name="source">
+            <option value="">All sources</option>
+            {% for value, label in sources %}
+            <option value="{{ value }}" {% if active_source == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary"><svg class="icon"><use href="#icon-search"></use></svg> Search</button>
+
+        <div class="filter-pills">
+            <label class="pill"><input type="radio" name="posted" value="" {% if not active_window %}checked{% endif %} onchange="this.form.submit()"> Any time</label>
+            <label class="pill"><input type="radio" name="posted" value="24h" {% if active_window == "24h" %}checked{% endif %} onchange="this.form.submit()"> Past 24 hours</label>
+            <label class="pill"><input type="radio" name="posted" value="7d" {% if active_window == "7d" %}checked{% endif %} onchange="this.form.submit()"> Past week</label>
+            <label class="pill"><input type="radio" name="posted" value="30d" {% if active_window == "30d" %}checked{% endif %} onchange="this.form.submit()"> Past month</label>
+        </div>
+    </form>
+
+    {% if jobs %}
+    <p class="results-count">{{ jobs|length }} job{{ jobs|length|pluralize }} found</p>
+    {% endif %}
+
+    <div class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                <div class="job-top-actions">
+                    <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+                    {% include "partials/save_button.html" %}
+                </div>
+            </div>
+            <h3>{{ job.title }}</h3>
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+            {% if job.author_name %}<p class="job-meta posted-by"><svg class="icon"><use href="#icon-user"></use></svg> Posted by {{ job.author_name }}</p>{% endif %}
+            <div class="job-tags">
+                <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                {% for skill in job.skills|slice:":3" %}<span class="tag">{{ skill }}</span>{% endfor %}
+            </div>
+            {% include "partials/apply_button.html" with button_class="view-more-btn" %}
+        </div>
+        {% empty %}
+        {% if search_submitted %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-search"></use></svg>
+            <h3>No jobs found</h3>
+            <p>Try a different title, skill, location, category, or time range.</p>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-search"></use></svg>
+            <h3>Search for your next opportunity</h3>
+            <p>Enter a job title, skill, or location above to find relevant jobs.</p>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

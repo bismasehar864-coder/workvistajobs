@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if active_section == "profile" %}My Profile{% elif active_section == "profile_update" %}Update Profile{% else %}Super Admin Panel{% endif %} - WorkVista</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/superadmin_dashboard.css' %}">
+</head>
+<body>
+
+{% include "partials/icon_sprite.html" %}
+
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo">
+           <img src="{% static 'images/logo.png' %}"
+     alt="WorkVista Logo"
+     style="width: 40px; height: 40px; object-fit: contain;">
+            <span>WorkVista</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li{% if active_section == "profile" or active_section == "profile_update" %} class="active"{% endif %}><a href="{% url 'superadmin_dashboard' %}?section=profile"><svg class="icon"><use href="#icon-user"></use></svg> My Profile</a></li>
+            <li data-section="admins"{% if active_section == "admins" %} class="active"{% endif %}><a href="{% url 'superadmin_dashboard' %}?section=admins"><svg class="icon"><use href="#icon-users"></use></svg> Manage admins</a></li>
+            <li data-section="users"{% if active_section == "users" %} class="active"{% endif %}><a href="{% url 'superadmin_dashboard' %}?section=users"><svg class="icon"><use href="#icon-user"></use></svg> Manage users</a></li>
+            <li data-section="scraper"{% if active_section == "scraper" %} class="active"{% endif %}><a href="{% url 'superadmin_dashboard' %}?section=scraper"><svg class="icon"><use href="#icon-settings"></use></svg> Manage scraper</a></li>
+            <li data-section="employers"{% if active_section == "employers" %} class="active"{% endif %}><a href="{% url 'superadmin_dashboard' %}?section=employers"><svg class="icon"><use href="#icon-building"></use></svg> Manage Employers</a></li>
+        </ul>
+        <div class="logout">
+            <a href="{% url 'logout' %}"><svg class="icon"><use href="#icon-logout"></use></svg> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <h1>{% if active_section == "profile" %}My Profile{% elif active_section == "profile_update" %}Update Profile{% else %}Super admin panel{% endif %}</h1>
+    {% if messages %}
+    <div class="toast-stack" role="status" aria-live="polite">
+        {% for message in messages %}
+        <div class="toast toast--{{ message.tags }}">
+            <svg class="icon"><use href="#icon-{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}"></use></svg>
+            <span>{{ message }}</span>
+            <button type="button" class="toast__close" aria-label="Dismiss" onclick="this.parentElement.remove()">
+                <svg class="icon"><use href="#icon-close"></use></svg>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+        {% if active_section == 'profile' %}
+        <div class="section active" id="profile">
+            <div class="section-header">
+                <div>
+                    <h2>My Profile</h2>
+                    <p>View your account details.</p>
+                </div>
+                <a class="btn-primary" href="{% url 'superadmin_update_profile' %}">Update Profile</a>
+            </div>
+            <div class="scraper-card">
+                <div class="field">
+                    <label>Name</label>
+                    <p>{{ request.user.first_name|default:request.user.username }}</p>
+                </div>
+                <div class="field">
+                    <label>Email</label>
+                    <p>{{ request.user.email }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if active_section == 'profile_update' %}
+        <div class="section active" id="profile_update">
+            <div class="section-header">
+                <div>
+                    <h2>Update Profile</h2>
+                    <p>Update your account details or reset your password.</p>
+                </div>
+            </div>
+            <div class="scraper-card">
+                <form method="post" action="{% url 'superadmin_update_profile' %}">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label for="{{ form.name.id_for_label }}">Name</label>
+                        {{ form.name }}
+                        {{ form.name.errors }}
+                        <p id="profile-name-error" class="errorlist" role="alert" aria-live="polite" hidden>Name can only contain letters.</p>
+                    </div>
+                    <div class="field">
+                        <label for="{{ form.email.id_for_label }}">Email</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                        <p id="profile-email-error" class="errorlist" role="alert" aria-live="polite" hidden>Enter a valid email address.</p>
+                    </div>
+                    <div class="field">
+                        <h3>Reset Password</h3>
+                        <label for="{{ form.new_password.id_for_label }}">New password</label>
+                        <div class="profile-password-wrapper">
+                            {{ form.new_password }}
+                            <button type="button" class="toggle-password" onclick="toggleProfilePassword('{{ form.new_password.id_for_label }}', this)" aria-label="Show password" title="Show password">👁</button>
+                        </div>
+                        {{ form.new_password.errors }}
+                    </div>
+                    <div class="field">
+                        <label for="{{ form.confirm_password.id_for_label }}">Confirm password</label>
+                        <div class="profile-password-wrapper">
+                            {{ form.confirm_password }}
+                            <button type="button" class="toggle-password" onclick="toggleProfilePassword('{{ form.confirm_password.id_for_label }}', this)" aria-label="Show password" title="Show password">👁</button>
+                        </div>
+                        {{ form.confirm_password.errors }}
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                        <a href="{% url 'superadmin_profile' %}" class="btn-secondary btn-on-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            const profileForm = document.querySelector("#profile_update form");
+            const profileName = document.getElementById("id_name");
+            const profileEmail = document.getElementById("id_email");
+            const profileNameError = document.getElementById("profile-name-error");
+            const profileEmailError = document.getElementById("profile-email-error");
+            const profilePassword = document.getElementById("id_new_password");
+            const profilePasswordConfirmation = document.getElementById("id_confirm_password");
+
+            function filterProfileName() {
+                const value = profileName.value;
+                const cursor = profileName.selectionStart;
+                const filtered = value.replace(/[^A-Za-z ]/g, "");
+                if (value !== filtered) {
+                    const filteredCursor = value.slice(0, cursor).replace(/[^A-Za-z ]/g, "").length;
+                    profileName.value = filtered;
+                    profileName.setSelectionRange(filteredCursor, filteredCursor);
+                    profileNameError.hidden = false;
+                } else {
+                    profileNameError.hidden = true;
+                }
+            }
+
+            function validateProfileEmail() {
+                const invalid = profileEmail.value !== ""
+                    && (profileEmail.validity.typeMismatch
+                        || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileEmail.value));
+                profileEmailError.hidden = !invalid;
+                profileEmail.setCustomValidity(invalid ? "Enter a valid email address." : "");
+                return !invalid;
+            }
+
+            profileName.addEventListener("input", filterProfileName);
+            profileEmail.addEventListener("input", validateProfileEmail);
+
+            const validateProfilePassword = () => {
+                const message = profilePassword.value && !profilePasswordConfirmation.value
+                    ? "Please confirm your new password."
+                    : profilePassword.value !== profilePasswordConfirmation.value
+                        ? "The passwords do not match."
+                        : "";
+                profilePasswordConfirmation.setCustomValidity(message);
+            };
+            profilePassword.addEventListener("input", validateProfilePassword);
+            profilePasswordConfirmation.addEventListener("input", validateProfilePassword);
+            profileForm.addEventListener("submit", event => {
+                const validName = /^[A-Za-z ]+$/.test(profileName.value.trim());
+                profileNameError.hidden = validName;
+                if (!validName) {
+                    event.preventDefault();
+                    profileName.focus();
+                }
+                if (!validateProfileEmail()) {
+                    event.preventDefault();
+                    profileEmail.focus();
+                }
+                validateProfilePassword();
+            });
+
+            function toggleProfilePassword(inputId, button) {
+                const passwordInput = document.getElementById(inputId);
+                passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+                const label = passwordInput.type === "password" ? "Show password" : "Hide password";
+                button.setAttribute("aria-label", label);
+                button.setAttribute("title", label);
+            }
+        </script>
+        {% endif %}
+
+        <div class="section{% if active_section == "admins" %} active{% endif %}" id="admins">
+            <div class="section-header">
+                <div>
+                    <h2>Manage admins</h2>
+                    <p>Create and manage WorkVista administrators.</p>
+                </div>
+                <button type="button" class="btn-primary" onclick="openModal()"><svg class="icon"><use href="#icon-plus"></use></svg> Add admin</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th class="actions">Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for admin in admins %}
+                        <tr>
+                            <td>{{ admin.get_full_name|default:admin.username }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td class="actions">
+                                <form method="post" action="{% url 'remove_admin' admin.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="empty-message">No admins yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section{% if active_section == "users" %} active{% endif %}" id="users">
+            <div class="section-header">
+                <div>
+                    <h2>Manage users</h2>
+                    <p>View and manage registered WorkVista users.</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Username</th><th>Email</th><th class="actions">Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td class="actions">
+                                <form method="post" action="{% url 'delete_user' user.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="empty-message">No users found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section{% if active_section == "employers" %} active{% endif %}" id="employers">
+            <div class="section-header">
+                <div>
+                    <h2>Manage Employers</h2>
+                    <p>Review employer-posted jobs waiting for approval.</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Employer</th><th>Company</th><th>Job Title</th><th>Location</th><th>Posted Date</th><th>Status</th><th class="actions">Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for job in pending_employer_jobs %}
+                        <tr>
+                            <td>{{ job.posted_by.get_full_name|default:job.posted_by.username }}</td>
+                            <td>{{ job.company }}</td>
+                            <td>{{ job.title }}</td>
+                            <td>{{ job.location|default:"Remote" }}</td>
+                            <td>{{ job.first_seen_at|date:"M j, Y" }}</td>
+                            <td>Pending</td>
+                            <td class="actions">
+                                <form method="post" action="{% url 'allow_employer_job' job.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-primary">Allow</button>
+                                </form>
+                                <form method="post" action="{% url 'deny_employer_job' job.id %}" onsubmit="return confirm('Permanently delete this job? The employer will be notified.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-danger">Deny</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="7" class="empty-message">No employer jobs are waiting for approval.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section{% if active_section == "scraper" %} active{% endif %}" id="scraper">
+            <div class="section-header">
+                <div>
+                    <h2>Manage scraper</h2>
+                    <p>Run WorkVista's supported job scrapers.</p>
+                </div>
+            </div>
+            <div class="scraper-list">
+                <div class="scraper-card">
+                    <div class="scraper-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div>
+                    <h3>BrightSpyre</h3>
+                    <p>Scrape current Pakistan job listings. Jobs past their application deadline are skipped.</p>
+                    <p class="scraper-status">
+                        {% with run=scraper_runs.brightspyre %}
+                        {% if run %}
+                        <span class="scraper-status__dot scraper-status__dot--{{ run.status }}"></span>
+                        Last run {{ run.started_at|timesince }} ago &middot; {{ run.get_status_display|lower }}{% if run.status == "success" %}, {{ run.jobs_saved }} new{% endif %}
+                        {% if run.message %}<br>{{ run.message }}{% endif %}
+                        {% else %}
+                        <span class="scraper-status__dot"></span> Never run
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+                    <form method="post" action="{% url 'run_scraper' 'brightspyre' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Run scraper</button>
+                    </form>
+                </div>
+                <div class="scraper-card">
+                    <div class="scraper-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div>
+                    <h3>Mustakbil</h3>
+                    <p>Scrape recent postings from Mustakbil via its sitemap and JobPosting data. No browser needed.</p>
+                    <p class="scraper-status">
+                        {% with run=scraper_runs.mustakbil %}
+                        {% if run %}
+                        <span class="scraper-status__dot scraper-status__dot--{{ run.status }}"></span>
+                        Last run {{ run.started_at|timesince }} ago &middot; {{ run.get_status_display|lower }}{% if run.status == "success" %}, {{ run.jobs_saved }} new{% endif %}
+                        {% else %}
+                        <span class="scraper-status__dot"></span> Never run
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+                    <form method="post" action="{% url 'run_scraper' 'mustakbil' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Run scraper</button>
+                    </form>
+                </div>
+                <div class="scraper-card">
+                    <div class="scraper-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div>
+                    <h3>Python.org</h3>
+                    <p>Scrape available Python-related job listings from Python.org.</p>
+                    <p class="scraper-status">
+                        {% with run=scraper_runs.python_org %}
+                        {% if run %}
+                        <span class="scraper-status__dot scraper-status__dot--{{ run.status }}"></span>
+                        Last run {{ run.started_at|timesince }} ago &middot; {{ run.get_status_display|lower }}{% if run.status == "success" %}, {{ run.jobs_saved }} new{% endif %}
+                        {% else %}
+                        <span class="scraper-status__dot"></span> Never run
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+                    <form method="post" action="{% url 'run_scraper' 'python_org' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Run scraper</button>
+                    </form>
+                </div>
+                <div class="scraper-card">
+                    <div class="scraper-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div>
+                    <h3>National Job Portal</h3>
+                    <p>Scrape live government vacancies from njp.gov.pk. No browser needed — fast and headless.</p>
+                    <p class="scraper-status">
+                        {% with run=scraper_runs.njp %}
+                        {% if run %}
+                        <span class="scraper-status__dot scraper-status__dot--{{ run.status }}"></span>
+                        Last run {{ run.started_at|timesince }} ago &middot; {{ run.get_status_display|lower }}{% if run.status == "success" %}, {{ run.jobs_saved }} new{% endif %}
+                        {% else %}
+                        <span class="scraper-status__dot"></span> Never run
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+                    <form method="post" action="{% url 'run_scraper' 'njp' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Run scraper</button>
+                    </form>
+                </div>
+                <div class="scraper-card">
+                    <div class="scraper-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div>
+                    <h3>PPSC</h3>
+                    <p>Scrape live advertisements from the Punjab Public Service Commission.</p>
+                    <p class="scraper-status">
+                        {% with run=scraper_runs.ppsc %}
+                        {% if run %}
+                        <span class="scraper-status__dot scraper-status__dot--{{ run.status }}"></span>
+                        Last run {{ run.started_at|timesince }} ago &middot; {{ run.get_status_display|lower }}{% if run.status == "success" %}, {{ run.jobs_saved }} new{% endif %}
+                        {% if run.message %}<br>{{ run.message }}{% endif %}
+                        {% else %}
+                        <span class="scraper-status__dot"></span> Never run
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+                    <form method="post" action="{% url 'run_scraper' 'ppsc' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Run scraper</button>
+                    </form>
+                </div>
+                <div class="scraper-card">
+                    <div class="scraper-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div>
+                    <h3>Remote OK</h3>
+                    <p>Import remote job listings from Remote OK's public jobs API.</p>
+                    <p class="scraper-status">
+                        {% with run=scraper_runs.remoteok %}
+                        {% if run %}
+                        <span class="scraper-status__dot scraper-status__dot--{{ run.status }}"></span>
+                        Last run {{ run.started_at|timesince }} ago &middot; {{ run.get_status_display|lower }}{% if run.status == "success" %}, {{ run.jobs_saved }} new{% endif %}
+                        {% if run.message %}<br>{{ run.message }}{% endif %}
+                        {% else %}
+                        <span class="scraper-status__dot"></span> Never run
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+                    <form method="post" action="{% url 'run_scraper' 'remoteok' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Run scraper</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="add-admin-overlay" id="addAdminOverlay" aria-hidden="true">
+    <div class="add-admin-modal">
+        <button type="button" class="modal-close" onclick="closeModal()" aria-label="Close">
+            <svg class="icon"><use href="#icon-close"></use></svg>
+        </button>
+        <h2>Add new admin</h2>
+        <p class="subtitle">Create a new WorkVista administrator account.</p>
+        <form method="post" action="{% url 'add_admin' %}">
+            {% csrf_token %}
+            <div class="field">
+                <label for="addAdminName">Name</label>
+                <input id="addAdminName" type="text" name="username" placeholder="Name" required>
+            </div>
+            <div class="field">
+                <label for="addAdminEmail">Email</label>
+                <input id="addAdminEmail" type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="field">
+                <label for="addAdminPassword">Password</label>
+                <input id="addAdminPassword" type="password" name="password" placeholder="Password" minlength="6" required>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Create admin</button>
+                <button type="button" class="btn-ghost" onclick="closeModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="{% static 'js/toast.js' %}"></script>
+<script>
+    const addAdminOverlay = document.getElementById("addAdminOverlay");
+
+    function openModal() {
+        addAdminOverlay.classList.add("is-open");
+        addAdminOverlay.setAttribute("aria-hidden", "false");
+        document.getElementById("addAdminName").focus();
+    }
+
+    function closeModal() {
+        addAdminOverlay.classList.remove("is-open");
+        addAdminOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    addAdminOverlay.addEventListener("click", function (event) {
+        if (event.target === addAdminOverlay) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && addAdminOverlay.classList.contains("is-open")) {
+            closeModal();
+        }
+    });
+</script>
+</body>
+</html>

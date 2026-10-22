@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employer dashboard - WorkVista</title>
+{% load static %}{% load notifications %}
+{% unread_notification_count as unread_count %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/user_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/employer_dashboard.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% include "partials/icon_sprite.html" %}
+
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <a href="{% url 'home' %}" class="logo">
+           <img src="{% static 'images/logo.png' %}"
+     alt="WorkVista Logo"
+     style="width: 40px; height: 40px; object-fit: contain;">
+            <span>WorkVista</span>
+        </a>
+        {# Deliberately has no Recommended, Trending, Search or Saved.   #}
+        {# Employers run a company, they don't browse for work - and     #}
+        {# leaving those sections out of the template entirely means     #}
+        {# there is nothing to hide conditionally and no way for one to  #}
+        {# leak back in.                                                 #}
+        <ul>
+            <li><a id="nav-company" href="{% url 'employer_company' %}"{% if active_section == 'company' %} class="active"{% endif %}><svg class="icon"><use href="#icon-building"></use></svg> Company Profile</a></li>
+            <li><a id="nav-post-job" href="{% url 'post_job' %}"{% if active_section == 'post' %} class="active"{% endif %}><svg class="icon"><use href="#icon-briefcase"></use></svg> Post a Job</a></li>
+            <li><a id="nav-postings" href="{% url 'employer_postings' %}"{% if active_section == 'postings' %} class="active"{% endif %}><svg class="icon"><use href="#icon-briefcase"></use></svg> My Postings</a></li>
+            <li><a id="nav-notifications" href="{% url 'dashboard_notifications' %}"{% if active_section == 'notifications' %} class="active"{% endif %}><svg class="icon"><use href="#icon-bell"></use></svg> Notifications{% if unread_count %}<span class="nav-badge">{{ unread_count }}</span>{% endif %}</a></li>
+            <li><a id="nav-branches" href="{% url 'employer_branches' %}"{% if active_section == 'branches' %} class="active"{% endif %}><svg class="icon"><use href="#icon-pin"></use></svg> Branches</a></li>
+        </ul>
+        <div class="logout">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn"><svg class="icon"><use href="#icon-logout"></use></svg> Logout</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+    {% if messages %}
+    <div class="toast-stack" role="status" aria-live="polite">
+        {% for message in messages %}
+        <div class="toast toast--{{ message.tags }}">
+            <svg class="icon"><use href="#icon-{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}"></use></svg>
+            <span>{{ message }}</span>
+            <button type="button" class="toast__close" aria-label="Dismiss" onclick="this.parentElement.remove()">
+                <svg class="icon"><use href="#icon-close"></use></svg>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+        {% block dashboard_content %}{% endblock %}
+    </main>
+</div>
+
+<script src="{% static 'js/toast.js' %}"></script>
+<script src="{% static 'js/job-cards.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

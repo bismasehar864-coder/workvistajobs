@@ -1,0 +1,33 @@
+# WorkVista — Python dependencies
+#
+# Install into the project virtualenv:
+#
+#     python3.11 -m venv venv311
+#     source venv311/bin/activate
+#     pip install -r requirements.txt
+#     python -m spacy download en_core_web_sm
+#
+# The spaCy language model is NOT a pip package in this list — it is
+# downloaded with the command above. See guidebook/02-setup-and-running.md.
+
+# --- Web framework -------------------------------------------------
+Django==5.2.17
+
+# --- MySQL driver --------------------------------------------------
+# Pure-Python driver. config/__init__.py calls
+# pymysql.install_as_MySQLdb() so Django's mysql backend can use it
+# without the C extension mysqlclient needs.
+PyMySQL==1.2.0
+
+# --- Scraping ------------------------------------------------------
+requests==2.34.2          # njp, ppsc, mustakbil, python_org scrapers
+beautifulsoup4==4.15.0    # HTML parsing for all four
+lxml==6.1.3               # faster parser backend for BeautifulSoup
+
+# --- CV parsing ----------------------------------------------------
+pymupdf==1.28.2           # PDF text extraction (imported as fitz)
+python-docx==1.2.0        # .docx text extraction
+spacy==3.8.16             # named-entity extraction in jobs/resume_parser.py
+
+# --- Configuration -------------------------------------------------
+python-dotenv==1.2.3        # reads .env so secrets stay out of settings.py

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:24px;background:#f4f6fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#10192b;">
+  <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;padding:28px;">
+
+    <p style="margin:0 0 4px;font-size:18px;font-weight:600;">WorkVista</p>
+    <p style="margin:0 0 20px;color:#5b6478;font-size:14px;">
+      Hi {{ user.first_name|default:user.username }} &mdash;
+      {% if is_job_match %}{% if count == 1 %}a new job matches your profile.{% else %}{{ count }} new jobs match your profile.{% endif %}{% else %}{% if count == 1 %}you have a new WorkVista notification.{% else %}you have {{ count }} new WorkVista notifications.{% endif %}{% endif %}
+    </p>
+
+    {% for note in notifications %}
+    <div style="border:1px solid #e2e7ef;border-radius:10px;padding:16px;margin-bottom:12px;">
+      {% if note.job %}
+      <a href="{{ site_url }}{% url 'job_detail' note.job.id %}"
+         style="font-size:16px;font-weight:600;color:#10192b;text-decoration:none;">{{ note.title }}</a>
+      {% else %}
+      <strong style="font-size:16px;font-weight:600;color:#10192b;">{{ note.title }}</strong>
+      {% endif %}
+      {% if note.body %}<p style="margin:6px 0 0;color:#5b6478;font-size:13px;">{{ note.body }}</p>{% endif %}
+      {% if note.job and note.job.salary_display %}<p style="margin:6px 0 0;color:#1a7f5a;font-size:13px;">{{ note.job.salary_display }}</p>{% endif %}
+    </div>
+    {% endfor %}
+
+    <p style="margin:22px 0 0;">
+      <a href="{{ dashboard_url }}"
+         style="display:inline-block;background:#e4a335;color:#10192b;font-weight:600;
+                padding:11px 20px;border-radius:8px;text-decoration:none;font-size:14px;">
+        {% if is_job_match %}See everything matched to you{% else %}Open your dashboard{% endif %}
+      </a>
+    </p>
+
+    <p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #eef1f6;color:#8a92a6;font-size:12px;">
+      You're getting this because job alerts are on for your WorkVista account.
+      <a href="{{ unsubscribe_url }}" style="color:#8a92a6;">Turn them off</a>.
+    </p>
+
+  </div>
+</body>
+</html>

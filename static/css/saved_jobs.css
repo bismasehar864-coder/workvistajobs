@@ -1,0 +1,23 @@
+/* saved_jobs.html — job cards use shared .job-card from base.css */
+
+.saved-container { max-width: 1000px; }
+.section-head { margin-bottom: 1.6rem; }
+.section-head h1 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.8rem; margin-bottom: 0.2rem; }
+
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+}
+
+.saved-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+.saved-actions form { display: contents; }
+.saved-actions .btn-primary,
+.saved-actions .btn-danger {
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+}

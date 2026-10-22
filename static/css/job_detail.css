@@ -1,0 +1,163 @@
+.detail-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 24px 5rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--horizon);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.back-link .icon { width: 1em; height: 1em; transform: scaleX(-1); }
+.back-link:hover { text-decoration: underline; }
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .detail-layout { grid-template-columns: 1fr; }
+}
+
+.detail-main {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  animation: riseIn 500ms var(--ease) forwards;
+}
+
+.detail-head { margin-bottom: 2rem; }
+
+.detail-head-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.category-chip {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--horizon);
+  background: var(--mist-deep);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+}
+
+.detail-head h1 { margin-bottom: 0.9rem; }
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  color: var(--slate-soft);
+  font-size: 0.92rem;
+}
+.detail-meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.detail-meta .icon { width: 1em; height: 1em; color: var(--horizon-light); }
+
+.detail-section {
+  padding-top: 1.75rem;
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+.detail-section h2 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+
+.detail-description {
+  color: var(--slate);
+  line-height: 1.75;
+  white-space: pre-line;
+}
+
+.detail-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+}
+.detail-facts dt {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--slate-soft);
+  margin-bottom: 0.2rem;
+}
+.detail-facts dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.detail-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 1.5rem;
+  opacity: 0;
+  animation: riseIn 500ms var(--ease) 120ms forwards;
+}
+
+.apply-card {
+  background: var(--ink);
+  background: linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  color: #fff;
+}
+.apply-label { font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 0.35rem; }
+.apply-sub { color: rgba(255, 255, 255, 0.72); font-size: 0.88rem; margin-bottom: 1.25rem; }
+.apply-btn { width: 100%; }
+.apply-unavailable { color: rgba(255, 255, 255, 0.6); font-size: 0.88rem; }
+
+.similar-jobs {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
+}
+.similar-jobs h3 { font-size: 0.95rem; margin-bottom: 1rem; }
+.similar-job-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--slate);
+  transition: transform 160ms var(--ease);
+}
+.similar-job-item:first-of-type { border-top: none; padding-top: 0; }
+.similar-job-item strong { color: var(--ink); font-size: 0.92rem; }
+.similar-job-item span { color: var(--slate-soft); font-size: 0.82rem; }
+.similar-job-item:hover { transform: translateX(4px); color: var(--horizon); }
+.similar-job-item:hover strong { color: var(--horizon); }
+
+/* -------------------------------------------------------------------- */
+/* Author attribution & owner actions (WorkVista-posted jobs only)       */
+/* -------------------------------------------------------------------- */
+
+.detail-meta .posted-by { color: var(--horizon); font-weight: 600; }
+
+.owner-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line);
+}

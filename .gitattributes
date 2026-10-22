@@ -1,0 +1,3 @@
+# build.sh runs on Render's Linux; a Windows checkout must not give it
+# CRLF line endings, or bash fails with "$'\r': command not found".
+*.sh text eol=lf

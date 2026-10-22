@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - WorkVista</title>
+{% load static %}{% load notifications %}
+{% unread_notification_count as unread_count %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/user_dashboard.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% include "partials/icon_sprite.html" %}
+
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <a href="{% url 'home' %}" class="logo">
+            <img src="{% static 'images/logo.png' %}"
+     alt="WorkVista Logo"
+     style="width: 40px; height: 40px; object-fit: contain;">
+            <span>WorkVista</span>
+        </a>
+        {# Every entry is a plain link to a real address, and the server   #}
+        {# marks which one is open. Nothing here depends on the browser    #}
+        {# remembering anything, so a reload, a back button or a shared    #}
+        {# link all land exactly where they say they will.                 #}
+        <ul>
+            <li><a id="nav-profile" href="{% url 'dashboard_profile' %}"{% if active_section == 'profile' %} class="active"{% endif %}><svg class="icon"><use href="#icon-user"></use></svg> My Profile</a></li>
+            <li><a id="nav-edit-profile" href="{% url 'edit_profile' %}"{% if active_section == 'edit_profile' %} class="active"{% endif %}><svg class="icon"><use href="#icon-settings"></use></svg> Edit Profile</a></li>
+            {# The count rides on the nav entry rather than a bell in a #}
+            {# top bar: one place to look, and a page with room to show #}
+            {# a job properly instead of a cramped dropdown.            #}
+            <li><a id="nav-notifications" href="{% url 'dashboard_notifications' %}"{% if active_section == 'notifications' %} class="active"{% endif %}><svg class="icon"><use href="#icon-bell"></use></svg> Notifications{% if unread_count %}<span class="nav-badge">{{ unread_count }}</span>{% endif %}</a></li>
+            <li><a id="nav-recommended" href="{% url 'dashboard_recommended' %}"{% if active_section == 'recommended' %} class="active"{% endif %}><svg class="icon"><use href="#icon-compass"></use></svg> Recommended Jobs</a></li>
+            <li><a id="nav-trending" href="{% url 'dashboard_trending' %}"{% if active_section == 'trending' %} class="active"{% endif %}><svg class="icon"><use href="#icon-spark"></use></svg> Trending Jobs</a></li>
+            <li><a id="nav-search" href="{% url 'dashboard_search' %}"{% if active_section == 'search' %} class="active"{% endif %}><svg class="icon"><use href="#icon-search"></use></svg> Search Jobs</a></li>
+            <li><a id="nav-saved" href="{% url 'dashboard_saved' %}"{% if active_section == 'saved' %} class="active"{% endif %}><svg class="icon"><use href="#icon-bookmark"></use></svg> Saved Jobs</a></li>
+            <li><a id="nav-applied" href="{% url 'applied_jobs' %}"{% if request.resolver_match.url_name == 'applied_jobs' %} class="active"{% endif %}><svg class="icon"><use href="#icon-check-circle"></use></svg> Applied Jobs</a></li>
+            <li><a id="nav-settings" href="{% url 'dashboard_settings' %}"{% if active_section == 'settings' %} class="active"{% endif %}><svg class="icon"><use href="#icon-settings"></use></svg> Set Preferences</a></li>
+        </ul>
+        <div class="logout">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn"><svg class="icon"><use href="#icon-logout"></use></svg> Logout</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+    {% if messages %}
+    <div class="toast-stack" role="status" aria-live="polite">
+        {% for message in messages %}
+        <div class="toast toast--{{ message.tags }}">
+            <svg class="icon"><use href="#icon-{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}"></use></svg>
+            <span>{{ message }}</span>
+            <button type="button" class="toast__close" aria-label="Dismiss" onclick="this.parentElement.remove()">
+                <svg class="icon"><use href="#icon-close"></use></svg>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+        {% block dashboard_content %}{% endblock %}
+    </main>
+</div>
+
+<script src="{% static 'js/toast.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/job-cards.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

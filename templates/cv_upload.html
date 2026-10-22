@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}
+<div class="onboarding-topbar">
+    <a href="{% url 'home' %}" class="logo">
+        <svg class="mark" viewBox="0 0 34 34" fill="none">
+            <circle cx="17" cy="17" r="17" fill="#E4A335"/>
+            <path d="M0 22c3-4 7-6 11-6s6.5 2.5 9 2.5S25 15 34 12v10a17 17 0 0 1-34 0v-.4Z" fill="#10192B"/>
+        </svg>
+        <span>WorkVista</span>
+    </a>
+    <div class="onboarding-steps">
+        <span class="step current"><span class="dot">1</span> Upload CV</span>
+        <span class="sep"></span>
+        <span class="step"><span class="dot">2</span> Preferences</span>
+    </div>
+</div>
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cv_upload.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="onboarding-main">
+    <div class="card">
+        <h2>Upload your CV</h2>
+        <p class="subtitle">We'll read it and match you to real openings</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="dropzone" for="cvFile" id="dropzone">
+                <svg class="icon"><use href="#icon-upload"></use></svg>
+                <span class="dropzone-title">Click to select your CV</span>
+                <span class="dropzone-hint">PDF only</span>
+                <input type="file" name="cv" id="cvFile" accept="application/pdf" onchange="document.getElementById('fileName').innerText = this.files.length ? this.files[0].name : 'No file selected'; document.getElementById('dropzone').classList.toggle('has-file', this.files.length > 0);">
+            </label>
+            <p id="fileName" class="file-name">No file selected</p>
+            <button type="submit" id="uploadBtn" class="btn-primary">Continue</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

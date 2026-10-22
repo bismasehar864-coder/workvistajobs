@@ -1,0 +1,577 @@
+/* ============================================================
+   Dashboard shell — sidebar + tabbed sections, shared by the
+   user dashboard. Same ink/gold language as the public site.
+   ============================================================ */
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* -------------------------------------------------------------- */
+/* Sidebar                                                          */
+/* -------------------------------------------------------------- */
+
+.sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  padding: 1.6rem 1.2rem;
+  background: linear-gradient(160deg, var(--ink) 0%, var(--ink-soft) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #fff;
+  margin-bottom: 2.2rem;
+  padding: 0 0.4rem;
+}
+.sidebar .logo .mark { width: 30px; height: 30px; }
+.sidebar .logo span { font-family: var(--font-display); font-size: 1.15rem; }
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sidebar ul li a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease);
+}
+.sidebar ul li a .icon { width: 1.1em; height: 1.1em; }
+
+.sidebar ul li a:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+
+.sidebar ul li a.active { background: var(--gold); color: var(--ink); }
+
+.sidebar .logout { margin-top: auto; padding-top: 1rem; }
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+}
+.logout-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.4); }
+
+@media (max-width: 760px) {
+  .dashboard-container { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  .sidebar .logo { margin-bottom: 0; margin-right: auto; }
+  .sidebar ul { flex-direction: row; flex-wrap: wrap; }
+  .sidebar ul li span { display: none; }
+  .sidebar .logout { margin-top: 0; }
+  .logout-btn { width: auto; padding: 0.6rem 0.9rem; }
+}
+
+/* -------------------------------------------------------------- */
+/* Main / sections                                                  */
+/* -------------------------------------------------------------- */
+
+.main {
+  flex: 1;
+  padding: 2.5rem;
+  max-width: 1100px;
+}
+
+.main .messages-wrap { max-width: none; margin: 0 0 1.2rem; padding: 0; }
+
+.section { display: none; }
+.section.active { display: block; animation: riseIn 320ms var(--ease); }
+
+.section-head { margin-bottom: 1.6rem; }
+.section-head h1 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.8rem; }
+.section > h1 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.8rem; margin-bottom: 0.3rem; }
+
+.subtitle { color: var(--slate-soft); }
+
+/* -------------------------------------------------------------- */
+/* Job grid (uses shared .job-card from base.css)                   */
+/* -------------------------------------------------------------- */
+
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+  margin-top: 1.2rem;
+}
+
+/* -------------------------------------------------------------- */
+/* Insight cards — quiet, mist background, no hover-lift            */
+/* -------------------------------------------------------------- */
+
+.insight-card {
+  background: var(--mist);
+  border-radius: var(--radius-md);
+  padding: 1.6rem 1.8rem;
+  margin-bottom: 1.2rem;
+}
+.profile-form-card {
+  box-sizing: border-box;
+  padding: 1.5rem;
+}
+.profile-form {
+  width: 100%;
+  text-align: left;
+}
+.profile-form .field {
+  box-sizing: border-box;
+  width: 100%;
+  align-items: stretch;
+}
+.profile-form .field > label {
+  align-self: flex-start;
+  text-align: left;
+}
+.profile-form .field > input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+.profile-form .field > select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  height: 46px;
+}
+.skills-textarea {
+  width: 100% !important;
+  height: 120px !important;
+  min-height: 120px !important;
+  max-height: 120px !important;
+  box-sizing: border-box;
+  resize: none !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.skills-textarea::-webkit-scrollbar {
+  display: none !important;
+}
+.insight-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.insight-card .field:last-child { margin-bottom: 0.6rem; }
+
+.insight-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin: 1.1rem 0 0.5rem;
+}
+.insight-label:first-of-type { margin-top: 0; }
+
+.insight-item {
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.insight-item-title { font-weight: 600; color: var(--ink); margin: 0; }
+.insight-item p { margin: 0.15rem 0; }
+.insight-item ul { margin: 0.4rem 0 0; padding-left: 1.1rem; color: var(--slate-soft); }
+
+.btn-on-light {
+  color: var(--horizon) !important;
+  border-color: var(--horizon-light) !important;
+}
+.btn-on-light:hover { background: var(--mist-deep) !important; }
+
+.cv-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.cv-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--horizon);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius-sm);
+}
+.cv-badge .icon { width: 1em; height: 1em; }
+.cv-badge.muted { background: var(--mist-deep); color: var(--slate-soft); }
+
+.cv-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.cv-form input[type="file"] { font-size: 0.85rem; }
+
+/* -------------------------------------------------------------- */
+/* Search bar                                                       */
+/* -------------------------------------------------------------- */
+
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.6rem;
+}
+.search-bar .filter-pills { flex-basis: 100%; margin-top: 0.25rem; }
+.search-bar input,
+.search-bar select {
+  flex: 1;
+  min-width: 160px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--mist);
+  color: var(--ink);
+}
+.search-bar input:focus, .search-bar select:focus {
+  outline: none;
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+.search-bar button { flex-shrink: 0; }
+
+/* =========================================================
+   NOTIFICATIONS, BADGE AND SETTINGS
+   =========================================================
+   The badge is gold, not red. Gold is this system's mark for
+   "an opportunity worth reaching" - which is exactly what a job
+   match is. Red would read as an error and make good news look
+   like something went wrong. */
+
+.nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: var(--radius-pill);
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The lede carries the page's one bold moment: a display-face
+   sentence that says what is here, so the cards below can stay
+   quiet and utilitarian. */
+.section-lede {
+    margin-bottom: 26px;
+}
+
+.section-lede h1 {
+    font-size: clamp(1.9rem, 2.2vw + 1rem, 2.6rem);
+    margin-bottom: 0.15em;
+}
+
+.section-lede p {
+    margin: 0;
+    color: var(--slate-soft);
+    max-width: 52ch;
+}
+
+/* ---------- notification list ---------- */
+
+.notification-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+    max-width: 720px;
+}
+
+.notification-card {
+    position: relative;
+    padding: 20px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    transition: box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.notification-card:hover {
+    border-color: var(--mist-deep);
+    box-shadow: var(--shadow-soft);
+}
+
+/* Unread on arrival. Opening the page marks everything read, so
+   this marker survives exactly one render - long enough to see
+   what you came for. */
+.notification-card--new {
+    border-left: 3px solid var(--gold);
+}
+
+.notification-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.notification-head h2 {
+    font-size: 1.06rem;
+    line-height: 1.35;
+    margin: 0;
+}
+
+.notification-head h2 a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.notification-head h2 a:hover,
+.notification-head h2 a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.notification-new {
+    flex: none;
+    padding: 2px 9px;
+    border-radius: var(--radius-pill);
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.notification-meta {
+    margin: 6px 0 0;
+    color: var(--slate-soft);
+    font-size: 0.88rem;
+}
+
+.notification-salary {
+    margin: 4px 0 0;
+    color: var(--meadow);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.notification-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.notification-foot time {
+    font-size: 0.8rem;
+    color: var(--slate-soft);
+}
+
+/* ---------- settings ---------- */
+
+.setting-block {
+    display: grid;
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 30px;
+    max-width: 860px;
+}
+
+.setting-intro h2 {
+    font-size: 1.18rem;
+    margin: 0 0 0.3em;
+}
+
+.setting-intro p {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--slate-soft);
+}
+
+/* ---------- the alerts switch ---------- */
+
+.switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.switch {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+}
+
+/* The real control, kept operable and focusable rather than
+   display:none - the track below is only its costume. */
+.switch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    margin: 0;
+}
+
+.switch-track {
+    position: relative;
+    flex: none;
+    width: 46px;
+    height: 26px;
+    border-radius: var(--radius-pill);
+    background: var(--mist-deep);
+    transition: background 0.22s var(--ease);
+}
+
+.switch-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 1px 3px rgba(16, 25, 43, 0.28);
+    transition: transform 0.22s var(--ease);
+}
+
+/* Meadow, not gold: green reads as "this is on". Gold stays
+   reserved for opportunity markers, so the two never blur. */
+.switch input:checked + .switch-track {
+    background: var(--meadow);
+}
+
+.switch input:checked + .switch-track .switch-knob {
+    transform: translateX(20px);
+}
+
+.switch input:focus-visible + .switch-track {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+}
+
+.switch-label {
+    font-size: 0.95rem;
+    color: var(--slate);
+}
+
+.switch-note {
+    margin: 12px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .switch-track,
+    .switch-knob,
+    .notification-card {
+        transition: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .setting-block {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .notification-foot {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-form-card {
+        padding: 1rem;
+    }
+}
+
+/* Desired salary. The unit lives beside the field rather than in the
+   placeholder, so it stays readable once a figure is typed. */
+.salary-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    text-align: left;
+}
+
+.salary-field select {
+    box-sizing: border-box;
+    flex: 0 0 96px;
+    width: 96px;
+    height: 46px;
+}
+
+.salary-field input {
+    box-sizing: border-box;
+    flex: 0 1 170px;
+    width: 170px;
+    min-width: 0;
+    max-width: 170px;
+    height: 46px;
+}
+
+.salary-suffix {
+    color: var(--slate-soft);
+    font-size: 0.88rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+    .salary-field select {
+        flex-basis: 72px;
+        width: 72px;
+        padding-right: 0.35rem;
+        padding-left: 0.45rem;
+    }
+
+    .salary-field input {
+        flex-basis: 70px;
+        padding-right: 0.45rem;
+        padding-left: 0.45rem;
+    }
+
+    .salary-suffix {
+        font-size: 0.8rem;
+    }
+}

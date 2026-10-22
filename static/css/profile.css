@@ -1,0 +1,142 @@
+/* =========================
+   BACKGROUND (MATCH HOME STYLE)
+========================= */
+body {
+    font-family: 'Poppins', sans-serif;
+
+    background: linear-gradient(135deg, #f8fafc, #eef2ff);
+}
+
+/* soft glow */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: -1;
+}
+
+body::before {
+    background: rgba(30, 58, 138, 0.12);
+    top: -80px;
+    left: -80px;
+}
+
+body::after {
+    background: rgba(59, 130, 246, 0.12);
+    bottom: -80px;
+    right: -80px;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.profile-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 60px 20px;
+}
+
+/* =========================
+   HEADER
+========================= */
+.profile-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.profile-header h1 {
+    font-size: 40px;
+    color: #1e3a8a;
+}
+
+.profile-header p {
+    color: #64748b;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+.profile-card {
+    display: flex;
+    gap: 40px;
+
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(10px);
+
+    padding: 30px;
+    border-radius: 20px;
+
+    border: 1px solid rgba(226,232,240,0.6);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* avatar */
+.avatar img {
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 3px solid #1e3a8a;
+}
+
+/* info */
+.info {
+    flex: 1;
+}
+
+.row {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 13px;
+    color: #64748b;
+}
+
+p {
+    font-size: 16px;
+    color: #0f172a;
+    font-weight: 500;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
+}
+
+.edit {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: white;
+}
+
+.upload {
+    background: white;
+    border: 1px solid #1e3a8a;
+    color: #1e3a8a;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+}

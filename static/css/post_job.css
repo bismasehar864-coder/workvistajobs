@@ -1,0 +1,228 @@
+/* ==================================================================== */
+/* Post a Job — the posting form and the member's own postings.         */
+/* Loads on top of base.css + user_dashboard.css, so it only defines    */
+/* what those don't already give us: the form grid and owner actions on */
+/* a posted job card.                                                    */
+/* ==================================================================== */
+
+.post-job-wrapper { max-width: 900px; }
+
+/* -------------------------------------------------------------------- */
+/* Form shell                                                            */
+/* -------------------------------------------------------------------- */
+
+.post-job-form {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 1.5rem;
+}
+
+.form-row { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+.form-row-wide { grid-column: 1 / -1; }
+
+.form-row label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.post-job-form .input-field {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--mist);
+  color: var(--ink);
+}
+
+.post-job-form .input-field:focus {
+  outline: none;
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+
+.post-job-form textarea.input-field { resize: vertical; min-height: 150px; line-height: 1.6; }
+
+.field-hint { font-size: 0.82rem; color: var(--slate-soft); }
+.field-error { font-size: 0.82rem; color: var(--coral); font-weight: 600; }
+
+.form-errors {
+  background: var(--coral-soft);
+  color: var(--coral);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+}
+.form-errors p + p { margin-top: 0.35rem; }
+
+/* Source is fixed to WorkVista for anything posted here, so it reads as
+   a stated fact rather than a disabled control the user might fight. */
+.source-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-pill);
+  background: var(--meadow-soft);
+  color: var(--meadow);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.source-locked .icon { width: 18px; height: 18px; }
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+/* -------------------------------------------------------------------- */
+/* Salary field                                                          */
+/* -------------------------------------------------------------------- */
+.salary-block { gap: 0.6rem; }
+
+.salary-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.post-job-form .salary-range {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex: 1 1 20rem;
+  min-width: 0;
+  height: 42px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--mist);
+}
+
+.post-job-form .salary-number {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  width: 0;
+  height: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.post-job-form .salary-range-separator {
+  flex: 0 0 auto;
+  color: var(--slate-soft);
+}
+
+.post-job-form .salary-monthly {
+  flex: 0 0 auto;
+  color: var(--slate-soft);
+  line-height: 42px;
+}
+
+.post-job-form .salary-select {
+  box-sizing: border-box;
+  flex: 0 0 100px;
+  width: 100px;
+  height: 42px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--mist);
+  color: var(--ink);
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--slate-soft) 50%),
+    linear-gradient(135deg, var(--slate-soft) 50%, transparent 50%);
+  background-position:
+    calc(100% - 13px) 50%,
+    calc(100% - 8px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.post-job-form .salary-select:focus {
+  outline: none;
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+
+.post-job-form .salary-range:focus-within {
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+
+.post-job-form .salary-number:focus {
+  outline: none;
+}
+
+.post-job-form .salary-number::placeholder {
+  color: var(--slate-soft);
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------------- */
+/* The member's own postings                                             */
+/* -------------------------------------------------------------------- */
+
+.posted-head { margin-top: 0.5rem; }
+.posted-head h2 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.4rem; }
+
+.posted-job-card h3 a { color: inherit; text-decoration: none; }
+.posted-job-card h3 a:hover { color: var(--horizon); }
+
+.posted-job-card .job-salary {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.92rem;
+  margin: 0.35rem 0;
+}
+
+.tag-source { background: var(--meadow-soft); color: var(--meadow); }
+
+/* .btn-small and .delete-post-form live in base.css — the job detail
+   page renders the same owner actions and doesn't load this file. */
+.posted-job-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* -------------------------------------------------------------------- */
+/* Narrow screens                                                        */
+/* -------------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .post-job-form { padding: 1.25rem; }
+  .form-actions { flex-wrap: wrap; }
+}
+
+@media (max-width: 520px) {
+  .post-job-form .salary-range { flex-basis: 100%; }
+}

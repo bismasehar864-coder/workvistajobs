@@ -1,0 +1,36 @@
+# Render Blueprint - New > Blueprint in the Render dashboard, pick this
+# repository. Secrets are marked sync: false, so Render asks for them
+# instead of reading them from here. See guidebook/14-deploying.md.
+services:
+  - type: web
+    name: workvista
+    runtime: python
+    plan: free
+    # bash explicitly: a commit from Windows drops the execute bit.
+    buildCommand: bash build.sh
+    # One worker: spaCy's model is loaded per process, and two copies
+    # don't fit the free plan's 512 MB. Threads cover concurrency.
+    startCommand: gunicorn config.wsgi:application --workers 1 --threads 4 --timeout 120
+    envVars:
+      - key: WORKVISTA_DEBUG
+        value: "False"
+      - key: WORKVISTA_SECRET_KEY
+        generateValue: true
+      - key: WORKVISTA_DB_NAME
+        value: defaultdb
+      - key: WORKVISTA_DB_USER
+        value: avnadmin
+      - key: WORKVISTA_DB_HOST
+        sync: false
+      - key: WORKVISTA_DB_PORT
+        sync: false
+      - key: WORKVISTA_DB_PASSWORD
+        sync: false
+      - key: WORKVISTA_DB_SSL_CA
+        value: /etc/secrets/ca.pem
+      - key: WORKVISTA_EMAIL_USER
+        sync: false
+      - key: WORKVISTA_EMAIL_PASSWORD
+        sync: false
+      - key: WORKVISTA_SITE_URL
+        sync: false

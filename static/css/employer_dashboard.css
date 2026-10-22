@@ -1,0 +1,55 @@
+/* Employer-only pieces. Everything else is inherited from
+   user_dashboard.css, so the two dashboards stay visually identical
+   and only their contents differ. */
+
+.company-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px 28px;
+}
+
+.company-form .field,
+.branch-form .field {
+    margin-bottom: 14px;
+}
+
+.branch-list {
+    display: grid;
+    gap: 14px;
+}
+
+.branch-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+    padding: 16px 18px;
+    border: 1px solid #e2e7ef;
+    border-radius: 12px;
+}
+
+.branch-item .field {
+    margin-bottom: 0;
+}
+
+.branch-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.locked-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    border: 1px dashed #d8dee9;
+    border-radius: 10px;
+    opacity: .8;
+}
+
+@media (max-width: 720px) {
+    .branch-item {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+}

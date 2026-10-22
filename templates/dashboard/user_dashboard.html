@@ -1,0 +1,357 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load job_filters %}
+{% block dashboard_content %}
+
+<div class="section{% if active_section == 'recommended' %} active{% endif %}" id="recommended">
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-compass"></use></svg> Recommended for you</h1>
+            <p class="subtitle">Based on your CV, preferences, and the jobs you view or search most</p>
+        </div>
+    </div>
+    <div class="job-grid">
+        {% for job in recommended_jobs %}
+        <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+            <div class="job-top">
+                <div class="job-icon icon-purple"><svg class="icon"><use href="#icon-compass"></use></svg></div>
+                <div class="job-top-actions">
+                    <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+                    {% include "partials/save_button.html" %}
+                </div>
+            </div>
+            <h3>{{ job.title }}</h3>
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+            <div class="job-tags">
+                <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                {% if job.company %}<span class="tag">{{ job.company }}</span>{% endif %}
+            </div>
+            {% include "partials/apply_button.html" with button_class="view-more-btn" %}
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-compass"></use></svg>
+            <h3>No recommendations yet</h3>
+            <p>Upload your CV or set your job preferences, and browse a few jobs — recommendations improve the more we know what you're looking for.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="section{% if active_section == 'trending' %} active{% endif %}" id="trending">
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-spark"></use></svg> Trending jobs</h1>
+            <p class="subtitle">Latest opportunities for you</p>
+        </div>
+    </div>
+
+    <form method="get" class="filter-bar" action="{% url 'dashboard_trending' %}">
+        <input type="hidden" name="q" value="{{ search_query }}">
+        <input type="hidden" name="location" value="{{ search_location }}">
+        <input type="hidden" name="type" value="{{ search_type }}">
+        <input type="hidden" name="posted" value="{{ active_window }}">
+        <input type="hidden" name="category" value="{{ active_category }}">
+        <div class="filter-row">
+            <select name="trend_category" class="category-select" onchange="this.form.submit()">
+                <option value="">All categories</option>
+                {% for value, label, count in trend_categories %}
+                <option value="{{ value }}" {% if active_trend_category == value %}selected{% endif %}>{{ label }} ({{ count }})</option>
+                {% endfor %}
+            </select>
+            <div class="filter-pills">
+                <label class="pill"><input type="radio" name="trend_window" value="" {% if not active_trend_window %}checked{% endif %} onchange="this.form.submit()"> Any time</label>
+                <label class="pill"><input type="radio" name="trend_window" value="24h" {% if active_trend_window == "24h" %}checked{% endif %} onchange="this.form.submit()"> Past 24 hours</label>
+                <label class="pill"><input type="radio" name="trend_window" value="7d" {% if active_trend_window == "7d" %}checked{% endif %} onchange="this.form.submit()"> Past week</label>
+                <label class="pill"><input type="radio" name="trend_window" value="30d" {% if active_trend_window == "30d" %}checked{% endif %} onchange="this.form.submit()"> Past month</label>
+            </div>
+        </div>
+    </form>
+
+    <p class="results-count">{{ trending_jobs|length }} job{{ trending_jobs|length|pluralize }}</p>
+
+    <div class="job-grid">
+        {% for job in trending_jobs %}
+        <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+            {% if forloop.counter <= 5 %}
+            <span class="trending-badge"><svg class="icon"><use href="#icon-spark"></use></svg> #{{ forloop.counter }} trending</span>
+            {% endif %}
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                <div class="job-top-actions">
+                    <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+                    {% include "partials/save_button.html" %}
+                </div>
+            </div>
+            <h3>{{ job.title }}</h3>
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+            <div class="job-tags">
+                <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                {% if job.company %}<span class="tag">{{ job.company }}</span>{% endif %}
+            </div>
+            {% include "partials/apply_button.html" with button_class="view-more-btn" %}
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-compass"></use></svg>
+            <h3>No trending jobs right now</h3>
+            <p>Check back soon — new openings are added regularly.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="section{% if active_section == 'profile' %} active{% endif %}" id="profile">
+    <h1><svg class="icon"><use href="#icon-user"></use></svg> My profile</h1>
+
+    <div class="insight-card">
+        <h3>Account</h3>
+        <form method="post" action="{% url 'dashboard_profile' %}">
+            {% csrf_token %}
+            <div class="field">
+                <label>Name</label>
+                <input type="text" value="{{ request.user.first_name|default:request.user.username }}" disabled>
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ request.user.email }}">
+            </div>
+            <button type="submit" name="update_email" value="1" class="btn-secondary btn-on-light">Update email</button>
+        </form>
+    </div>
+
+    <div class="insight-card">
+        <h3><svg class="icon"><use href="#icon-file"></use></svg> My CV</h3>
+        {% if profile.cv %}
+        <div class="cv-row">
+            <div class="cv-badge"><svg class="icon"><use href="#icon-file"></use></svg> PDF</div>
+            <a href="{{ profile.cv.url }}" class="view-more-btn" target="_blank">View your CV <svg class="icon"><use href="#icon-chevron-right"></use></svg></a>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="cv-form" action="{% url 'dashboard_profile' %}">
+            {% csrf_token %}
+            <input type="hidden" name="update_cv" value="1">
+            <input type="file" name="cv" accept="application/pdf">
+            <button type="submit" class="btn-secondary btn-on-light">Update CV</button>
+        </form>
+        {% else %}
+        <div class="cv-row">
+            <div class="cv-badge muted"><svg class="icon"><use href="#icon-file"></use></svg> PDF</div>
+            <span class="subtitle">No CV uploaded yet</span>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="cv-form" action="{% url 'dashboard_profile' %}">
+            {% csrf_token %}
+            <input type="hidden" name="update_cv" value="1">
+            <input type="file" name="cv" accept="application/pdf">
+            <button type="submit" class="btn-secondary btn-on-light">Upload CV</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="insight-card">
+        <h3><svg class="icon"><use href="#icon-check-circle"></use></svg> CV insights</h3>
+
+        <p class="insight-label">Skills</p>
+        {% if profile.skills %}
+        <div class="job-tags">
+            {% for skill in profile.skills %}<span class="tag">{{ skill }}</span>{% endfor %}
+        </div>
+        {% else %}
+        <p class="subtitle">Not extracted yet</p>
+        {% endif %}
+
+        <p class="insight-label">Experience</p>
+        {% if cv_data.experience %}
+        {% for exp in cv_data.experience %}
+        <div class="insight-item">
+            <p class="insight-item-title">{{ exp.company }}</p>
+            {% if exp.title %}<p>{{ exp.title }}</p>{% endif %}
+            {% if exp.duration %}<p class="subtitle">{{ exp.duration }}</p>{% endif %}
+            {% if exp.description %}
+            <ul>
+                {% for item in exp.description %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="subtitle">No experience data available</p>
+        {% endif %}
+
+        <p class="insight-label">Education</p>
+        {% if cv_data.education %}
+        {% for edu in cv_data.education %}
+        <div class="insight-item">
+            <p class="insight-item-title">{{ edu.degree }}</p>
+            <p>{{ edu.institution }}</p>
+            <p class="subtitle">{{ edu.year }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="subtitle">No education data available</p>
+        {% endif %}
+
+        <p class="insight-label">Certifications</p>
+        {% if cv_data.certifications %}
+        <div class="job-tags">
+            {% for cert in cv_data.certifications %}<span class="tag">{{ cert }}</span>{% endfor %}
+        </div>
+        {% else %}
+        <p class="subtitle">No certifications found</p>
+        {% endif %}
+
+        <p class="insight-label">Honours &amp; awards</p>
+        {% if cv_data.honours %}
+        <div class="job-tags">
+            {% for item in cv_data.honours %}<span class="tag">{{ item }}</span>{% endfor %}
+        </div>
+        {% else %}
+        <p class="subtitle">No honours or awards found</p>
+        {% endif %}
+
+        <p class="insight-label">Training</p>
+        {% if cv_data.training %}
+        <div class="job-tags">
+            {% for item in cv_data.training %}<span class="tag">{{ item }}</span>{% endfor %}
+        </div>
+        {% else %}
+        <p class="subtitle">No training courses found</p>
+        {% endif %}
+
+        <p class="insight-label">Languages</p>
+        {% if cv_data.languages %}
+        <div class="job-tags">
+            {% for item in cv_data.languages %}<span class="tag">{{ item }}</span>{% endfor %}
+        </div>
+        {% else %}
+        <p class="subtitle">No languages found</p>
+        {% endif %}
+    </div>
+
+    <div class="insight-card">
+        <h3><svg class="icon"><use href="#icon-settings"></use></svg> Job preferences</h3>
+        
+        <a href="{% url 'dashboard_settings' %}" class="btn-secondary btn-on-light">Open Preferences</a>
+    </div>
+</div>
+
+<div class="section{% if active_section == 'search' %} active{% endif %}" id="search">
+    <div class="search-wrapper">
+        <div class="section-head">
+            <div>
+                <h1><svg class="icon"><use href="#icon-search"></use></svg> Find your next job</h1>
+                <p class="subtitle">Search by title, skills, location, or job type</p>
+            </div>
+        </div>
+        <form method="get" class="search-bar" action="{% url 'dashboard_search' %}">
+            <input type="text" name="q" placeholder="Job title, company, or keywords" value="{{ search_query }}">
+            <input type="text" name="location" placeholder="Location" value="{{ search_location }}">
+            <select name="type">
+                <option value="">All job types</option>
+                <option value="Full-time" {% if search_type == "Full-time" %}selected{% endif %}>Full-time</option>
+                <option value="Part-time" {% if search_type == "Part-time" %}selected{% endif %}>Part-time</option>
+                <option value="Remote" {% if search_type == "Remote" %}selected{% endif %}>Remote</option>
+                <option value="Contract" {% if search_type == "Contract" %}selected{% endif %}>Contract</option>
+            </select>
+            <select name="category">
+                <option value="">All categories</option>
+                {% for value, label, count in categories %}
+                <option value="{{ value }}" {% if active_category == value %}selected{% endif %}>{{ label }} ({{ count }})</option>
+                {% endfor %}
+            </select>
+            <select name="source">
+                <option value="">All sources</option>
+                {% for value, label in sources %}
+                <option value="{{ value }}" {% if active_source == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary"><svg class="icon"><use href="#icon-search"></use></svg> Search</button>
+
+            <div class="filter-pills">
+                <label class="pill"><input type="radio" name="posted" value="" {% if not active_window %}checked{% endif %} onchange="this.form.submit()"> Any time</label>
+                <label class="pill"><input type="radio" name="posted" value="24h" {% if active_window == "24h" %}checked{% endif %} onchange="this.form.submit()"> Past 24 hours</label>
+                <label class="pill"><input type="radio" name="posted" value="7d" {% if active_window == "7d" %}checked{% endif %} onchange="this.form.submit()"> Past week</label>
+                <label class="pill"><input type="radio" name="posted" value="30d" {% if active_window == "30d" %}checked{% endif %} onchange="this.form.submit()"> Past month</label>
+            </div>
+        </form>
+
+        {% if search_submitted %}
+        <h2>Search results</h2>
+        <p class="subtitle">
+            {% if jobs %}{{ jobs|length }} job{{ jobs|length|pluralize }} found{% else %}No jobs found{% endif %}
+        </p>
+        <div class="job-grid">
+            {% for job in jobs %}
+            <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+                <div class="job-top">
+                    <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                    <div class="job-top-actions">
+                        <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+                        {% include "partials/save_button.html" %}
+                    </div>
+                </div>
+                <h3>{{ job.title|default:"Job opportunity" }}</h3>
+                <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+                <div class="job-tags">
+                    <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                    {% if job.company %}<span class="tag">{{ job.company }}</span>{% endif %}
+                </div>
+                {% if job.skills %}
+                <div class="job-tags">
+                    {% for skill in job.skills %}<span class="tag">{{ skill }}</span>{% endfor %}
+                </div>
+                {% endif %}
+                {% include "partials/apply_button.html" with button_class="view-more-btn" %}
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <svg class="icon"><use href="#icon-search"></use></svg>
+                <h3>No jobs found</h3>
+                <p>Try another job title, skill, location, or category.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-search"></use></svg>
+            <h3>Search for your next opportunity</h3>
+            <p>Enter a job title, skill, or location above to find relevant jobs.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="section{% if active_section == 'saved' %} active{% endif %}" id="saved">
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-bookmark"></use></svg> Saved jobs</h1>
+            <p class="subtitle">Jobs you've bookmarked, most recent first</p>
+        </div>
+    </div>
+    <div class="job-grid">
+        {% for job in saved_job_list %}
+        <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                <div class="job-top-actions">
+                    <span class="job-badge badge-trend">{{ job.get_category_display }}</span>
+                    {% include "partials/save_button.html" %}
+                </div>
+            </div>
+            <h3>{{ job.title }}</h3>
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+            <div class="job-tags">
+                <span class="tag">{{ job.job_type|default:"Full-time" }}</span>
+                {% if job.company %}<span class="tag">{{ job.company }}</span>{% endif %}
+            </div>
+            {% include "partials/apply_button.html" with button_class="view-more-btn" %}
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-bookmark"></use></svg>
+            <h3>No saved jobs yet</h3>
+            <p>Bookmark a job while browsing to see it here.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

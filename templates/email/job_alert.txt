@@ -1,0 +1,15 @@
+Hi {{ user.first_name|default:user.username }},
+
+{% if is_job_match %}{% if count == 1 %}A new job matching your profile was posted:{% else %}{{ count }} new jobs matching your profile were posted:{% endif %}{% else %}{% if count == 1 %}You have a new WorkVista notification:{% else %}You have {{ count }} new WorkVista notifications:{% endif %}{% endif %}
+{% for note in notifications %}
+  {{ note.title }}
+  {% if note.body %}{{ note.body }}
+  {% endif %}{% if note.job and note.job.salary %}{{ note.job.salary }}
+  {% endif %}{% if note.job %}{{ site_url }}{% url 'job_detail' note.job.id %}{% endif %}
+{% endfor %}
+{% if is_job_match %}See everything matched to you:{% else %}Open your dashboard:{% endif %}
+{{ dashboard_url }}
+
+--
+You're getting this because job alerts are on for your WorkVista account.
+Turn them off: {{ unsubscribe_url }}

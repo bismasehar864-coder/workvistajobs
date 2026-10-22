@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<link rel="stylesheet" href="{% static 'css/signin.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-illustration">
+        {% include "partials/vista_illustration.html" %}
+        <div class="copy">
+            <h3>Good to see you again.</h3>
+            <p>Sign back in to pick up your matches where you left off.</p>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="form-box">
+            <h2>Sign in</h2>
+            <p class="subtitle">Welcome back to WorkVista</p>
+
+            {% if form.non_field_errors %}
+            <div class="error-msg">{{ form.non_field_errors.0 }}</div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="field-error">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+                
+                   <div class="field">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+
+                     <div class="password-wrapper">
+                        {{ form.password }}
+
+                           <button
+                              type="button"
+                               class="toggle-password"
+                               onclick="togglePassword('{{ form.password.id_for_label }}', this)"
+                                aria-label="Show password"
+                               title="Show password"
+                            >
+                                  👁
+                              </button>
+                               </div>
+
+    {% if form.password.errors %}
+        <div class="field-error">
+            {{ form.password.errors.0 }}
+        </div>
+    {% endif %}
+</div>
+
+
+                <p class="extra"><a href="{% url 'password_reset' %}">Forgot password?</a></p>
+                <button type="submit" class="btn-primary">Sign in</button>
+            </form>
+            <p class="extra">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+function togglePassword(inputId, button) {
+    const passwordInput = document.getElementById(inputId);
+
+    if (!passwordInput) return;
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        button.setAttribute("aria-label", "Hide password");
+        button.setAttribute("title", "Hide password");
+    } else {
+        passwordInput.type = "password";
+        button.setAttribute("aria-label", "Show password");
+        button.setAttribute("title", "Show password");
+    }
+}
+</script>
+
+{% endblock %}

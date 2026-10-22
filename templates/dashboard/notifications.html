@@ -1,0 +1,76 @@
+{% extends layout_template|default:'dashboard/base_dashboard.html' %}
+{% load static %}{% load job_filters %}
+
+{% block dashboard_content %}
+
+<div class="section active" id="notifications">
+
+    <header class="section-lede">
+        <h1>Notifications</h1>
+        <p>
+            {% if is_employer %}
+                Updates about your job postings.
+            {% elif new_count == 1 %}
+                One new role matched your profile.
+            {% elif new_count %}
+                {{ new_count }} new roles matched your profile.
+            {% elif notifications %}
+                Everything that has matched your profile so far.
+            {% else %}
+                {% if is_employer %}Updates about your postings will appear here.{% else %}Matches will appear here as new jobs arrive.{% endif %}
+            {% endif %}
+        </p>
+    </header>
+
+    <ul class="notification-list">
+        {% for note in notifications %}
+        <li class="notification-card{% if note.id in newly_read_ids %} notification-card--new{% endif %}">
+
+            <div class="notification-head">
+                <h2>
+                    {% if note.job %}
+                    <a href="{% url 'job_detail' note.job.id %}">{{ note.title }}</a>
+                    {% else %}{{ note.title }}{% endif %}
+                </h2>
+                {% if note.id in newly_read_ids %}<span class="notification-new">New</span>{% endif %}
+            </div>
+
+            {% if note.kind == "job_match" %}
+            <p class="notification-meta">
+                {% if note.job.company %}{{ note.job.company }}{% endif %}
+                {% if note.job.company and note.job.location %} · {% endif %}
+                {% if note.job.location %}{{ note.job.location }}{% endif %}
+                {% if note.job.company or note.job.location %} · {% endif %}Matched
+            </p>
+            {% elif note.body %}
+            <p class="notification-meta">{{ note.body }}</p>
+            {% endif %}
+
+            {% if note.job.salary_display %}
+            <p class="notification-salary">{{ note.job.salary_display }}</p>
+            {% endif %}
+
+            <div class="notification-foot">
+                <time datetime="{{ note.created_at|date:'c' }}">{{ note.created_at|timesince }} ago</time>
+                {% if note.job %}
+                <a class="btn-outline btn-small" href="{% url 'job_detail' note.job.id %}">View job</a>
+                {% endif %}
+            </div>
+
+        </li>
+        {% empty %}
+        <li class="empty-state">
+            <svg class="icon"><use href="#icon-bell"></use></svg>
+            <h3>No matches yet</h3>
+            <p>
+                Tell us the job title, location and skills you're after and
+                we'll watch for them.
+            </p>
+            {% if not is_employer %}<a href="{% url 'dashboard_settings' %}" class="btn-primary">Set your preferences</a>{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+{% endblock %}

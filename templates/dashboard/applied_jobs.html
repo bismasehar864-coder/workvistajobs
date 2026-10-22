@@ -1,0 +1,41 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load job_filters %}
+{% block dashboard_content %}
+
+<div class="saved-container">
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-check-circle"></use></svg> Applied jobs</h1>
+            <p class="subtitle">Your applications, most recent first</p>
+        </div>
+    </div>
+    <div class="job-grid">
+        {% for application in applications %}
+        {% with job=application.job %}
+        <div class="job-card" data-href="{% url 'job_detail' job.id %}" tabindex="0" role="link" aria-label="View details for {{ job.title }}">
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+                <span class="job-badge badge-trend">Applied</span>
+            </div>
+            <h3>{{ job.title }}</h3>
+            {% if job.company %}<p class="job-meta"><svg class="icon"><use href="#icon-building"></use></svg> {{ job.company }}</p>{% endif %}
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> {{ job.location|clean_location|default:"Remote" }}</p>
+            <p class="job-meta"><svg class="icon"><use href="#icon-globe"></use></svg> {{ job.get_source_display }}</p>
+            <p class="job-meta">Applied {{ application.applied_at|date:"M j, Y" }}</p>
+            <div class="saved-actions">
+                <a href="{% url 'job_detail' job.id %}" class="btn-primary">View job</a>
+                {% if job.job_link %}<a href="{{ job.job_link }}" target="_blank" rel="noopener" class="btn-secondary btn-on-light">Continue to application</a>{% endif %}
+            </div>
+        </div>
+        {% endwith %}
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-check-circle"></use></svg>
+            <h3>No applied jobs yet</h3>
+            <p>Jobs you apply to will appear here.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

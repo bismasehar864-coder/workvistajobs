@@ -1,0 +1,890 @@
+/* ==========================================================================
+   WorkVista — Design System
+   Concept: "Vista" — the vantage point where a career horizon comes into
+   view. Deep dusk-navy grounds the page; a single warm gold marks the
+   opportunities worth reaching. Waypoint cards (jobs) and quiet insight
+   cards (data) are deliberately different shapes so hierarchy reads at
+   a glance instead of everything looking like the same rounded tile.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Color */
+  --ink: #10192b;
+  --ink-soft: #1c2c48;
+  --horizon: #24406e;
+  --horizon-light: #4767a0;
+  --gold: #e4a335;
+  --gold-deep: #c77f1f;
+  --mist: #eef2f7;
+  --mist-deep: #e3e9f1;
+  --paper: #ffffff;
+  --slate: #2b3648;
+  --slate-soft: #5b6472;
+  --meadow: #2f8f5b;
+  --meadow-soft: #e6f4ec;
+  --coral: #c0392b;
+  --coral-soft: #fbeae8;
+  --line: #dce3ec;
+
+  /* Shape */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-soft: 0 10px 30px rgba(16, 25, 43, 0.09);
+  --shadow-lift: 0 18px 44px rgba(16, 25, 43, 0.16);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.9, 0.3, 1);
+
+  /* Type */
+  --font-display: 'Fraunces', 'Iowan Old Style', serif;
+  --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--slate);
+  background: var(--mist);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0 0 0.5em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(2.25rem, 4vw + 1rem, 3.5rem); line-height: 1.08; }
+h2 { font-size: clamp(1.65rem, 2vw + 1rem, 2.25rem); line-height: 1.18; }
+h3 { font-size: 1.25rem; line-height: 1.3; font-family: var(--font-body); font-weight: 600; }
+
+p { margin: 0 0 1em; color: var(--slate-soft); }
+
+a { color: inherit; text-decoration: none; }
+
+img { max-width: 100%; display: block; }
+
+button { font-family: inherit; }
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------------------------------------------------------------------- */
+/* Buttons                                                               */
+/* -------------------------------------------------------------------- */
+
+.btn-primary,
+.btn-secondary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: transform 180ms var(--ease), box-shadow 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+
+.btn-primary {
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+  color: var(--ink);
+}
+.btn-primary:hover { background: var(--gold-deep); transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  padding: 0.8rem 1.7rem;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--paper);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+}
+.btn-secondary:hover { border-color: var(--paper); background: rgba(255, 255, 255, 0.08); }
+
+/* .btn-secondary is drawn for dark surfaces (white border, white text).
+   .btn-outline is its counterpart for the light surfaces - the dashboard
+   main area and the job detail page - where that would be invisible. */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.8rem 1.7rem;
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--horizon);
+  border: 1.5px solid var(--line);
+  transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease);
+}
+.btn-outline:hover { border-color: var(--horizon-light); background: var(--mist); color: var(--ink); }
+
+.btn-ghost {
+  padding: 0.6rem 0;
+  background: none;
+  color: var(--horizon);
+  border-bottom: 1.5px solid transparent;
+  border-radius: 0;
+}
+.btn-ghost:hover { border-bottom-color: var(--horizon); }
+
+.btn-danger {
+  background: var(--coral-soft);
+  color: var(--coral);
+  border-radius: var(--radius-pill);
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease);
+}
+.btn-danger:hover { background: #f6d3ce; }
+
+/* Compact variant, used by the Edit/Delete pair an author gets on their
+   own posting — on the Post a Job page and on the job detail page. */
+.btn-small { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
+
+/* "Posted by <member>" — only ever rendered for WorkVista-posted jobs,
+   which are the only ones with a posted_by author. */
+.posted-by { color: var(--horizon); font-weight: 600; }
+
+.delete-post-form { margin: 0; }
+
+/* -------------------------------------------------------------------- */
+/* Icons                                                                 */
+/* -------------------------------------------------------------------- */
+
+.icon {
+  width: 1.25em;
+  height: 1.25em;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------------- */
+/* Navbar                                                                */
+/* -------------------------------------------------------------------- */
+
+.navbar {
+  background: linear-gradient(120deg, var(--ink) 0%, var(--ink-soft) 100%);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.nav-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--paper);
+}
+.logo .mark { width: 34px; height: 34px; flex-shrink: 0; }
+.logo h2 {
+  color: var(--paper);
+  font-size: 1.3rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav-logout-form { display: contents; }
+
+.nav-buttons .btn {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.nav-buttons .btn:hover { color: var(--paper); background: rgba(255, 255, 255, 0.08); }
+.nav-buttons .btn.active { color: var(--ink); background: var(--gold); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--paper);
+  cursor: pointer;
+  padding: 0.4rem;
+}
+
+@media (max-width: 760px) {
+  .nav-toggle { display: flex; }
+  .nav-buttons {
+    position: absolute;
+    top: 76px;
+    left: 0;
+    right: 0;
+    background: var(--ink-soft);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem;
+    gap: 0.25rem;
+    display: none;
+  }
+  .nav-buttons.open { display: flex; }
+  .nav-buttons .btn { text-align: left; }
+}
+
+/* -------------------------------------------------------------------- */
+/* Messages / alerts                                                     */
+/* -------------------------------------------------------------------- */
+
+.messages-wrap {
+  max-width: 1180px;
+  margin: 1rem auto 0;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.alert {
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  animation: alertIn 320ms var(--ease);
+}
+.alert-success { background: var(--meadow-soft); color: #1f6b41; border-color: #c9e8d5; }
+.alert-error { background: var(--coral-soft); color: #96271b; border-color: #f2c6c0; }
+.alert-warning { background: #fdf1de; color: #8a5a12; border-color: #f3ddb2; }
+.alert-info { background: #e6edf7; color: var(--horizon); border-color: #cddaef; }
+
+@keyframes alertIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------------------------------------------------- */
+/* Footer                                                                */
+/* -------------------------------------------------------------------- */
+
+.footer {
+  background: var(--ink);
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  padding: 2rem 24px;
+  font-size: 0.85rem;
+  margin-top: 4rem;
+}
+
+/* -------------------------------------------------------------------- */
+/* Shared entrance / motion primitives                                  */
+/* -------------------------------------------------------------------- */
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes softPulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
+@keyframes routeFadeIn {
+  to { opacity: var(--route-target-opacity, 1); }
+}
+
+/* Shared "vista" illustration motion — used by the home hero panorama   */
+/* and the smaller auth-page illustration (partials/vista_illustration) */
+.sun-core { animation: softPulse 5s ease-in-out infinite; transform-origin: center; }
+.spark { animation: softPulse 3.2s ease-in-out infinite; transform-origin: center; }
+.route-line {
+  --route-target-opacity: 0.85;
+  opacity: 0;
+  animation: routeFadeIn 900ms var(--ease) 0.5s forwards;
+}
+.route-node {
+  opacity: 0;
+  animation: routeFadeIn 500ms var(--ease) 0.9s forwards;
+}
+
+/* -------------------------------------------------------------------- */
+/* Forms (shared)                                                       */
+/* -------------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.profile-password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.profile-password-wrapper input {
+  width: 100%;
+  padding-right: 45px;
+  box-sizing: border-box;
+}
+
+.profile-password-wrapper .toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 1;
+  font-size: 17px;
+  color: #64748b;
+}
+
+.profile-password-wrapper .toggle-password:hover {
+  color: #2563eb;
+}
+
+.field-hint {
+  font-weight: 400;
+  color: var(--slate-soft);
+}
+
+.field-error {
+  color: var(--coral);
+  font-size: 0.82rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+
+input[type="file"] {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--slate-soft);
+}
+input[type="file"]::file-selector-button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--horizon);
+  background: var(--mist-deep);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1rem;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease);
+}
+input[type="file"]::file-selector-button:hover { background: var(--line); }
+
+.field .errorlist {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  color: var(--coral);
+  font-size: 0.82rem;
+}
+
+/* Job grids (two class names used across templates for the same
+   pattern) — cards fade/rise in with a short stagger, once, on load.
+   Capped at the first 12 so a long results page doesn't keep
+   animating cards the viewer hasn't scrolled to yet for seconds. */
+.jobs-grid .job-card,
+.job-grid .job-card {
+  opacity: 0;
+  animation: riseIn 420ms var(--ease) forwards;
+}
+.jobs-grid .job-card:nth-child(1), .job-grid .job-card:nth-child(1) { animation-delay: 20ms; }
+.jobs-grid .job-card:nth-child(2), .job-grid .job-card:nth-child(2) { animation-delay: 60ms; }
+.jobs-grid .job-card:nth-child(3), .job-grid .job-card:nth-child(3) { animation-delay: 100ms; }
+.jobs-grid .job-card:nth-child(4), .job-grid .job-card:nth-child(4) { animation-delay: 140ms; }
+.jobs-grid .job-card:nth-child(5), .job-grid .job-card:nth-child(5) { animation-delay: 180ms; }
+.jobs-grid .job-card:nth-child(6), .job-grid .job-card:nth-child(6) { animation-delay: 220ms; }
+.jobs-grid .job-card:nth-child(7), .job-grid .job-card:nth-child(7) { animation-delay: 260ms; }
+.jobs-grid .job-card:nth-child(8), .job-grid .job-card:nth-child(8) { animation-delay: 300ms; }
+.jobs-grid .job-card:nth-child(9), .job-grid .job-card:nth-child(9) { animation-delay: 340ms; }
+.jobs-grid .job-card:nth-child(10), .job-grid .job-card:nth-child(10) { animation-delay: 380ms; }
+.jobs-grid .job-card:nth-child(11), .job-grid .job-card:nth-child(11) { animation-delay: 420ms; }
+.jobs-grid .job-card:nth-child(12), .job-grid .job-card:nth-child(12) { animation-delay: 460ms; }
+.jobs-grid .job-card:nth-child(n+13), .job-grid .job-card:nth-child(n+13) { animation-delay: 480ms; }
+
+/* Reused on the home page, trending, search results, saved jobs and    */
+/* the user dashboard so every job listing in the app looks the same.   */
+/* -------------------------------------------------------------------- */
+
+.job-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--horizon);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.5rem 1.6rem;
+  cursor: pointer;
+  transition: transform 220ms var(--ease), box-shadow 220ms var(--ease), border-left-color 220ms var(--ease);
+}
+
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+  border-left-color: var(--gold-deep);
+}
+
+/* jobs-grid items stretch to equal row height (CSS grid default), so
+   this keeps every job-card in a row the same height - and pins
+   whatever's last in the card (the "View job"/"Apply" link, usually)
+   to the bottom, regardless of how many tags/skills sit above it on
+   any given card. This is what actually fixes the "some cards have
+   the button up top, some at the bottom" misalignment. */
+.job-card > *:last-child { margin-top: auto; }
+
+.job-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 0.75rem;
+}
+
+.job-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.job-icon .icon { width: 1.2em; height: 1.2em; }
+.icon-blue { background: #e6edf7; color: var(--horizon); }
+.icon-purple { background: #efe9f7; color: #6b4fa0; }
+.icon-pink { background: #fbe9ef; color: #ab3b64; }
+.icon-gold { background: #fdf1de; color: var(--gold-deep); }
+
+.job-top-actions { display: flex; align-items: center; gap: 0.5rem; }
+.save-form { display: contents; }
+.save-btn {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  color: var(--slate-soft);
+  cursor: pointer;
+  transition: border-color 160ms var(--ease), background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+}
+.save-btn .icon { width: 1.05em; height: 1.05em; }
+.save-btn:hover { border-color: var(--gold-deep); color: var(--gold-deep); transform: scale(1.08); }
+.save-btn.saved { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.save-btn.saved:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: var(--ink); }
+
+.job-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+.badge-hot { background: var(--coral-soft); color: var(--coral); }
+.badge-trend { background: var(--meadow-soft); color: var(--meadow); }
+.badge-pop { background: #fdf1de; color: var(--gold-deep); }
+
+.job-card h3 { margin-bottom: 0.35rem; }
+
+.job-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--slate-soft);
+  margin-bottom: 0.7rem;
+}
+.job-meta .icon { width: 1em; height: 1em; color: var(--slate-soft); }
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+.job-tags .tag {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--horizon);
+  background: var(--mist-deep);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.view-more-btn {
+  color: var(--horizon);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 160ms var(--ease), gap 160ms var(--ease);
+}
+.view-more-btn:hover { border-bottom-color: var(--horizon); }
+.view-more-btn .icon { width: 1em; height: 1em; transition: transform 160ms var(--ease); }
+.view-more-btn:hover .icon { transform: translateX(3px); }
+
+/* Trending badge — the top 5 trending-ranked job cards on the
+   Trending Jobs page and the dashboard's trending section. A slow
+   diagonal shine sweep to read as "live"/animated without being
+   distracting; respects prefers-reduced-motion globally below. */
+.trending-badge {
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(100deg, var(--gold-deep), var(--gold) 45%, var(--gold-deep));
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  z-index: 2;
+}
+.trending-badge .icon { width: 0.95em; height: 0.95em; }
+.trending-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.65) 48%, transparent 66%);
+  background-size: 220% 100%;
+  animation: badgeShine 2.8s ease-in-out infinite;
+}
+@keyframes badgeShine {
+  0% { background-position: 140% 0; }
+  60%, 100% { background-position: -60% 0; }
+}
+
+/* Results count — placed directly above the grid it describes, the
+   same spot LinkedIn/Indeed put it: after the filters, before the
+   first card, so it reads as "here's what these filters produced"
+   rather than a disconnected page stat. */
+.results-count {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--slate-soft);
+  margin: 0 0 1rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.category-select {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition: border-color 160ms var(--ease);
+}
+.category-select:hover { border-color: var(--horizon-light); }
+.category-select:focus-visible { outline: 2.5px solid var(--gold-deep); outline-offset: 2px; }
+
+/* Filter pills — radio-driven filter chips (time window etc.) that
+   auto-submit their form on change. Native input is visually hidden
+   but stays keyboard/focus accessible. */
+.filter-bar { margin-bottom: 1.5rem; }
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--slate-soft);
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: border-color 160ms var(--ease), color 160ms var(--ease), background-color 160ms var(--ease);
+}
+.pill input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.pill:has(input:checked) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.pill:has(input:focus-visible) {
+  outline: 2.5px solid var(--gold-deep);
+  outline-offset: 2px;
+}
+.pill:hover { border-color: var(--horizon-light); }
+
+/* Empty state — reused wherever a list has nothing to show */
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  color: var(--slate-soft);
+}
+.empty-state .icon {
+  width: 48px;
+  height: 48px;
+  color: var(--horizon-light);
+  margin: 0 auto 1rem;
+}
+.empty-state h3 { color: var(--ink); margin-bottom: 0.35rem; }
+.empty-state p { max-width: 40ch; margin: 0 auto; }
+
+/* -------------------------------------------------------------------- */
+/* Onboarding shell — cv_upload / preferences (nav hidden, 2-step flow) */
+/* -------------------------------------------------------------------- */
+
+.onboarding-topbar {
+  background: var(--ink);
+  padding: 1.1rem 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.onboarding-topbar .logo { display: flex; align-items: center; gap: 0.6rem; color: #fff; }
+.onboarding-topbar .logo .mark { width: 28px; height: 28px; }
+.onboarding-topbar .logo span { font-family: var(--font-display); font-size: 1.1rem; }
+
+.onboarding-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.onboarding-steps .step { display: flex; align-items: center; gap: 0.4rem; }
+.onboarding-steps .dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+}
+.onboarding-steps .step.done .dot { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.onboarding-steps .step.current { color: #fff; }
+.onboarding-steps .step.current .dot { border-color: var(--gold); color: #fff; }
+.onboarding-steps .sep { width: 24px; height: 1px; background: rgba(255, 255, 255, 0.25); }
+
+.onboarding-main {
+  min-height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  padding: 2.5rem;
+  text-align: center;
+  animation: riseIn 500ms var(--ease);
+}
+.card h2 { margin-bottom: 0.3rem; }
+.card .subtitle { color: var(--slate-soft); margin-bottom: 1.8rem; }
+.card form { text-align: left; }
+
+/* -------------------------------------------------------------------- */
+/* Accessibility                                                        */
+/* -------------------------------------------------------------------- */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2.5px solid var(--gold-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* Toasts — confirmations that don't push the page around                */
+/* -------------------------------------------------------------------- */
+
+.toast-stack {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: min(24rem, calc(100vw - 2.5rem));
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--horizon-light);
+  box-shadow: var(--shadow-lift);
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 500;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 260ms var(--ease), transform 260ms var(--ease);
+  animation: toastIn 260ms var(--ease);
+}
+
+.toast--leaving { opacity: 0; transform: translateX(12px); }
+
+.toast--success { border-left-color: var(--meadow); }
+.toast--success .icon { color: var(--meadow); }
+.toast--error { border-left-color: var(--coral); }
+.toast--error .icon { color: var(--coral); }
+.toast--warning { border-left-color: var(--gold); }
+.toast--warning .icon { color: var(--gold-deep); }
+
+.toast .icon { width: 20px; height: 20px; flex-shrink: 0; }
+.toast span { flex: 1; }
+
+.toast__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.15rem;
+  color: var(--slate-soft);
+  display: inline-flex;
+  border-radius: var(--radius-sm);
+}
+.toast__close:hover { color: var(--ink); background: var(--mist); }
+.toast__close .icon { width: 16px; height: 16px; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 600px) {
+  .toast-stack { left: 1rem; right: 1rem; max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; transition: none; }
+}

@@ -1,0 +1,195 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block dashboard_content %}
+<div class="section active" id="edit-profile">
+    <header class="section-lede">
+        <h1>Edit profile</h1>
+        <p>Update your account details and job-seeking profile.</p>
+    </header>
+
+    <div class="insight-card profile-form-card">
+        <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}" class="profile-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="field-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="field">
+                <label for="{{ form.full_name.id_for_label }}">Full name</label>
+                {{ form.full_name }}
+                {% for error in form.full_name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.job_title.id_for_label }}">Preferred job title</label>
+                {{ form.job_title }}
+                {% for error in form.job_title.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.location.id_for_label }}">Location</label>
+                {{ form.location }}
+                {% for error in form.location.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            {% include "dashboard/_salary_field.html" %}
+
+            <div class="field">
+                <label for="{{ form.skills.id_for_label }}">Skills</label>
+                {{ form.skills }}
+                <p class="field-hint">Separate skills with commas.</p>
+            </div>
+
+            <div class="field">
+                <label>Preferred job types</label>
+                <div class="filter-pills">
+                    {% for choice in form.job_type %}
+                    <label class="pill">{{ choice.tag }} {{ choice.choice_label }}</label>
+                    {% endfor %}
+                </div>
+                {% for error in form.job_type.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.cv.id_for_label }}">Resume / CV</label>
+                {% if profile.cv %}
+                <p><a href="{{ profile.cv.url }}" target="_blank" rel="noopener">View current CV</a></p>
+                {% else %}
+                <p class="field-hint">No CV uploaded yet.</p>
+                {% endif %}
+                {{ form.cv }}
+                {% for error in form.cv.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                <p class="field-hint">Choose a PDF only to replace your current CV.</p>
+            </div>
+
+            <div class="field">
+                <h3>Reset Password</h3>
+                <label for="{{ form.new_password.id_for_label }}">New password</label>
+                <div class="profile-password-wrapper">
+                    {{ form.new_password }}
+                    <button type="button" class="toggle-password" onclick="toggleProfilePassword('{{ form.new_password.id_for_label }}', this)" aria-label="Show password" title="Show password">👁</button>
+                </div>
+                {% for error in form.new_password.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.confirm_password.id_for_label }}">Confirm password</label>
+                <div class="profile-password-wrapper">
+                    {{ form.confirm_password }}
+                    <button type="button" class="toggle-password" onclick="toggleProfilePassword('{{ form.confirm_password.id_for_label }}', this)" aria-label="Show password" title="Show password">👁</button>
+                </div>
+                {% for error in form.confirm_password.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                <p id="profile-password-error" class="field-error" hidden></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Update profile</button>
+                <a href="{% url 'dashboard_profile' %}" class="btn-secondary btn-on-light">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleProfilePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    input.type = input.type === "password" ? "text" : "password";
+    const label = input.type === "password" ? "Show password" : "Hide password";
+    button.setAttribute("aria-label", label);
+    button.setAttribute("title", label);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".profile-form");
+    const newPassword = form.querySelector('[name="new_password"]');
+    const confirmPassword = form.querySelector('[name="confirm_password"]');
+    const passwordError = document.getElementById("profile-password-error");
+    function validatePasswordMatch() {
+        const invalid = newPassword.value !== confirmPassword.value;
+        passwordError.textContent = invalid ? "The passwords do not match." : "";
+        passwordError.hidden = !invalid;
+        return !invalid;
+    }
+
+    newPassword.addEventListener("input", validatePasswordMatch);
+    confirmPassword.addEventListener("input", validatePasswordMatch);
+
+    const rules = {
+        full_name: {
+            pattern: /^[A-Za-z ]*$/,
+            allowed: /[^A-Za-z ]/g,
+            message: "Only alphabets are allowed",
+            required: true
+        },
+        job_title: {
+            pattern: /^[A-Za-z ]*$/,
+            allowed: /[^A-Za-z ]/g,
+            message: "Only alphabets are allowed"
+        },
+        location: {
+            pattern: /^[A-Za-z ,]*$/,
+            allowed: /[^A-Za-z ,]/g,
+            message: "Only alphabets and commas are allowed."
+        }
+    };
+
+    Object.keys(rules).forEach(function (name) {
+        const input = form.querySelector('[name="' + name + '"]');
+        const error = document.createElement("p");
+        error.className = "field-error";
+        error.hidden = true;
+        input.parentElement.appendChild(error);
+
+        input.addEventListener("input", function () {
+            const rule = rules[name];
+            const original = input.value;
+            input.value = original.replace(rule.allowed, "");
+            if (input.value !== original) {
+                error.textContent = rule.message;
+                error.hidden = false;
+            } else if (rule.pattern.test(input.value)) {
+                error.hidden = true;
+            }
+        });
+
+        input.addEventListener("blur", function () {
+            input.value = input.value.replace(/^ +| +$/g, "");
+        });
+    });
+
+    form.addEventListener("submit", function (event) {
+        let valid = true;
+        if (!validatePasswordMatch()) {
+            event.preventDefault();
+            confirmPassword.focus();
+            valid = false;
+        }
+        Object.keys(rules).forEach(function (name) {
+            const input = form.querySelector('[name="' + name + '"]');
+            const error = input.parentElement.lastElementChild;
+            const rule = rules[name];
+            input.value = input.value.replace(/^ +| +$/g, "");
+            const emptyRequired = rule.required && !input.value;
+            const fieldValid = !emptyRequired && rule.pattern.test(input.value);
+            if (!fieldValid) {
+                error.textContent = emptyRequired ? "This field is required." : rule.message;
+                error.hidden = false;
+                valid = false;
+            } else {
+                error.hidden = true;
+            }
+        });
+        if (!valid) event.preventDefault();
+    });
+});
+</script>
+{% endblock %}

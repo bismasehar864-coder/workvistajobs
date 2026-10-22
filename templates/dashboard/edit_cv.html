@@ -1,0 +1,44 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block dashboard_content %}
+
+<div class="section active" id="profile">
+    <h1><svg class="icon"><use href="#icon-file"></use></svg> Edit CV data</h1>
+    <p class="subtitle">Update the skills, education and experience extracted from your CV. Separate entries with a comma or a new line.</p>
+
+    <div class="insight-card">
+        <form method="post" class="pref-form">
+            {% csrf_token %}
+            <div class="field">
+                <label>Skills</label>
+                <textarea name="skills" rows="3">{% for skill in cv.skills %}{{ skill }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <div class="field">
+                <label>Education</label>
+                <textarea name="education" rows="3">{% for edu in cv.education %}{{ edu }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <div class="field">
+                <label>Experience</label>
+                <textarea name="experience" rows="3">{% for exp in cv.experience %}{{ exp }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <div class="field">
+                <label>Certifications</label>
+                <textarea name="certifications" rows="2">{% for item in cv.certifications %}{{ item }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <div class="field">
+                <label>Honours &amp; awards</label>
+                <textarea name="honours" rows="2">{% for item in cv.honours %}{{ item }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <div class="field">
+                <label>Training</label>
+                <textarea name="training" rows="2">{% for item in cv.training %}{{ item }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <div class="field">
+                <label>Languages</label>
+                <textarea name="languages" rows="2">{% for item in cv.languages %}{{ item }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+            </div>
+            <button type="submit" class="btn-primary">Save changes</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

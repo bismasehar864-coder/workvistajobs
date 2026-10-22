@@ -1,0 +1,140 @@
+/* trending_jobs.html — page shell; job cards use shared .job-card from base.css */
+
+.trending-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 3rem 24px 5rem;
+}
+
+.page-header { margin-bottom: 1.8rem; }
+.page-header h1 { display: flex; align-items: center; gap: 0.6rem; }
+.page-header p { color: var(--slate-soft); }
+
+.search-box {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 520px;
+  margin-bottom: 2.2rem;
+}
+.search-box input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+}
+.search-box input:focus {
+  outline: none;
+  border-color: var(--horizon-light);
+  box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+}
+
+/* =====================================================
+   CATEGORY-WISE JOBS GRAPH
+   ===================================================== */
+
+.category-chart {
+    margin: 26px 0 32px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2eaf4;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(24, 54, 93, 0.06);
+}
+
+.chart-heading {
+    margin-bottom: 22px;
+}
+
+.chart-heading h2 {
+    margin: 0 0 7px;
+    color: #16345c;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.chart-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.chart-row {
+    width: 100%;
+    min-width: 0;
+}
+
+.chart-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+    color: #344767;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.chart-label span {
+    flex: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+}
+
+.chart-label strong {
+    flex-shrink: 0;
+    color: #1769aa;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.chart-label strong {
+    color: #1769aa;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.chart-track {
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    background: #edf3fa;
+    border-radius: 20px;
+}
+
+.chart-fill {
+    height: 100%;
+    min-width: 3px;
+    background: linear-gradient(90deg, #1769aa, #48a4e8);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.chart-empty {
+    padding: 18px 0;
+    color: #718096;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .category-chart {
+        padding: 18px;
+        margin: 20px 0;
+    }
+
+    .chart-heading h2 {
+        font-size: 19px;
+    }
+}

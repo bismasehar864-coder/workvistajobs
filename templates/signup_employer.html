@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<link rel="stylesheet" href="{% static 'css/sign_up.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-illustration post-job-illustration">
+        {% include "partials/vista_illustration.html" %}
+        <div class="copy">
+            <h3>Hire from a pool that's already looking.</h3>
+            <p>Add your company once, then post as many openings as you like.</p>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="form-box">
+            <h2>Create an employer account</h2>
+            <p class="subtitle">Your account, then your company</p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                </div>
+                {% endif %}
+
+                <h3 class="form-section-head">Your account</h3>
+
+                <div class="field">
+                    <label for="{{ form.fullname.id_for_label }}">Full name</label>
+                    {{ form.fullname }}
+                    {% if form.fullname.errors %}<div class="field-error">{{ form.fullname.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field">
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="field-error">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field">
+    <label for="{{ form.password.id_for_label }}">Password</label>
+
+    <div class="password-wrapper">
+        {{ form.password }}
+
+        <button
+            type="button"
+            class="toggle-password"
+            onclick="togglePassword('{{ form.password.id_for_label }}', this)"
+            aria-label="Show password"
+            title="Show password"
+        >
+            👁
+        </button>
+    </div>
+
+    {% if form.password.errors %}
+        <div class="field-error">
+            {{ form.password.errors.0 }}
+        </div>
+    {% endif %}
+</div>
+
+                <h3 class="form-section-head">Your company</h3>
+
+                <div class="field">
+                    <label for="{{ form.company_name.id_for_label }}">Company name</label>
+                    {{ form.company_name }}
+                    {% if form.company_name.errors %}<div class="field-error">{{ form.company_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field">
+                    <label for="{{ form.company_location.id_for_label }}">Head office location</label>
+                    {{ form.company_location }}
+                    {% if form.company_location.errors %}<div class="field-error">{{ form.company_location.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field-pair">
+                    <div class="field">
+                        <label for="{{ form.website.id_for_label }}">Website <span class="optional">optional</span></label>
+                        {{ form.website }}
+                        {% if form.website.errors %}<div class="field-error">{{ form.website.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="field">
+                        <label for="{{ form.founded_year.id_for_label }}">Founded in <span class="optional">optional</span></label>
+                        {{ form.founded_year }}
+                        {% if form.founded_year.errors %}<div class="field-error">{{ form.founded_year.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="{{ form.description.id_for_label }}">About the company <span class="optional">optional</span></label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="field-error">{{ form.description.errors.0 }}</div>{% endif %}
+                </div>
+
+                <h3 class="form-section-head">
+                    Branch offices <span class="optional">optional</span>
+                </h3>
+                <p class="subtitle">
+                    Only if you hire in more than one place. You can add these later.
+                </p>
+
+                {{ branches.management_form }}
+
+                <div id="branch-rows">
+                    {% for branch_form in branches %}
+                    <div class="branch-row">
+                        <div class="field">
+                            <label for="{{ branch_form.name.id_for_label }}">Branch name</label>
+                            {{ branch_form.name }}
+                            {% if branch_form.name.errors %}<div class="field-error">{{ branch_form.name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="field">
+                            <label for="{{ branch_form.location.id_for_label }}">Branch location</label>
+                            {{ branch_form.location }}
+                            {% if branch_form.location.errors %}<div class="field-error">{{ branch_form.location.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="btn-secondary btn-on-light" id="add-branch">
+                    + Add another branch
+                </button>
+
+                <button type="submit" class="btn-primary">Create employer account</button>
+            </form>
+
+            <p class="extra">Looking for a job instead? <a href="{% url 'signup_employee' %}">Sign up as a job seeker</a></p>
+            <p class="extra">Already have an account? <a href="{% url 'signin' %}">Sign in</a></p>
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Cloning the last branch row and bumping its indexes is the whole of
+// the "add another" button. Branches are optional and the first row is
+// rendered server-side, so with this script never running the form
+// still submits one usable branch - the button is a convenience, not
+// the mechanism.
+(function () {
+    const button = document.getElementById('add-branch');
+    const rows = document.getElementById('branch-rows');
+    const total = document.querySelector('#id_branches-TOTAL_FORMS');
+
+    if (!button || !rows || !total) return;
+
+    button.addEventListener('click', function () {
+        const index = Number(total.value);
+        const clone = rows.lastElementChild.cloneNode(true);
+
+        clone.querySelectorAll('input').forEach(function (input) {
+            input.value = '';
+            input.id = input.id.replace(/-\d+-/, '-' + index + '-');
+            input.name = input.name.replace(/-\d+-/, '-' + index + '-');
+        });
+
+        clone.querySelectorAll('label').forEach(function (label) {
+            if (label.htmlFor) {
+                label.htmlFor = label.htmlFor.replace(/-\d+-/, '-' + index + '-');
+            }
+        });
+
+        clone.querySelectorAll('.field-error').forEach(function (error) {
+            error.remove();
+        });
+
+        rows.appendChild(clone);
+        total.value = index + 1;
+    });
+})();
+</script>
+
+<script>
+    function togglePassword(inputId, button) {
+    const passwordInput = document.getElementById(inputId);
+
+    if (!passwordInput) return;
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        button.textContent = "👁";
+        button.setAttribute("aria-label", "Hide password");
+        button.setAttribute("title", "Hide password");
+    } else {
+        passwordInput.type = "password";
+        button.textContent = "👁";
+        button.setAttribute("aria-label", "Show password");
+        button.setAttribute("title", "Show password");
+    }
+}
+</script>
+{% endblock %}

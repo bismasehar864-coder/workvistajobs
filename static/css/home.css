@@ -1,0 +1,460 @@
+/* ============================================================
+   Home — the vista: a panorama hero you're standing at the edge
+   of, with the rest of the page laid out like a clear horizon
+   line dividing distinct sections.
+   ============================================================ */
+
+.hero {
+  position: relative;
+  min-height: calc(100vh - 76px);
+  height: calc(100vh - 76px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  color: #fff;
+  background-image: linear-gradient(rgba(15, 29, 52, 0.06), rgba(15, 29, 52, 0.12)), url("../images/home.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 29, 49, 0.14);
+  pointer-events: none;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.hero-bg svg { width: 100%; height: 100%; display: none; }
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: calc(100vh - 76px);
+  display: flex;
+  align-items: flex-end;
+  padding: 1.25rem 24px 2rem;
+}
+
+.hero-copy { max-width: 560px; }
+
+.hero-copy h1 {
+  color: #fff;
+  opacity: 0;
+  animation: riseIn 700ms var(--ease) 0.1s forwards;
+}
+
+.hero-copy .hero-sub {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.1rem;
+  max-width: 460px;
+  opacity: 0;
+  animation: riseIn 700ms var(--ease) 0.28s forwards;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 1.6rem;
+  opacity: 0;
+  animation: riseIn 700ms var(--ease) 0.44s forwards;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    min-height: calc(100vh - 76px);
+    height: calc(100vh - 76px);
+  }
+  .hero-inner { padding: 1rem 20px 1.5rem; }
+  /* the panorama crop shifts at narrow widths and the route line can
+     cross the headline column — it's decorative, so simplest to drop it */
+  .route-line, .route-node { display: none; }
+}
+
+/* ------------------------------------------------------------ */
+/* Trending — waypoint cards                                     */
+/* ------------------------------------------------------------ */
+
+.trending { padding: 5rem 24px 1rem; max-width: 1180px; margin: 0 auto; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-head h2 { display: flex; align-items: center; gap: 0.55rem; }
+.section-head h2 .icon { color: var(--gold-deep); width: 1.05em; height: 1.05em; }
+
+.trending-layout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .trending-layout { grid-template-columns: 1fr; }
+}
+
+.view-more-container { text-align: center; margin: 2.5rem 0 0; }
+
+/* ------------------------------------------------------------ */
+/* Features — a horizon-divided list, not a card grid            */
+/* ------------------------------------------------------------ */
+
+.features { max-width: 1180px; margin: 6rem auto 0; padding: 0 24px; }
+
+.section-intro { margin-bottom: 2.5rem; }
+.section-intro h2 { margin-bottom: 0.4rem; }
+.section-intro p { margin: 0; font-size: 1.05rem; }
+
+.features-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 700px) {
+  .features-container { grid-template-columns: 1fr; }
+}
+
+.feature-box {
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: flex-start;
+  transition: transform 220ms var(--ease), box-shadow 220ms var(--ease);
+}
+.feature-box:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); }
+
+.tint-blue { background: var(--mist-deep); }
+.tint-gold { background: #fdf1de; }
+.tint-purple { background: #efe9f7; }
+.tint-green { background: var(--meadow-soft); }
+
+.feature-art {
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+}
+.feature-art svg { width: 100%; height: 100%; }
+
+.feature-box h3 { margin-bottom: -0.2rem; }
+.feature-box p { margin: 0; max-width: 40ch; }
+
+/* ------------------------------------------------------------ */
+/* How it works — a genuine sequence, numbered on purpose         */
+/* ------------------------------------------------------------ */
+
+.steps { max-width: 1180px; margin: 6rem auto 0; padding: 0 24px; }
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  position: relative;
+  margin-top: 1rem;
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2.5rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 3rem;
+  left: calc(16.5% + 1.25rem);
+  right: calc(16.5% + 1.25rem);
+  height: 0;
+  border-top: 2px dashed var(--gold);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+@media (max-width: 760px) {
+  .timeline { grid-template-columns: 1fr; padding: 2.5rem 1.75rem; }
+  .timeline::before { display: none; }
+}
+
+.timeline-item {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 220ms var(--ease);
+}
+.timeline-item:hover { transform: translateY(-4px); }
+
+.step-art {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(0 8px 18px rgba(16, 25, 43, 0.12));
+}
+.step-art svg { width: 100%; height: 100%; }
+
+.step-num {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--mist);
+}
+
+.step-pulse { animation: softPulse 2.6s ease-in-out infinite; transform-origin: center; }
+
+.step-bob { animation: stepBob 2.2s ease-in-out infinite; transform-origin: center; }
+@keyframes stepBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.timeline-item p { margin: 0; font-weight: 600; color: var(--slate); }
+
+
+
+/* =========================================================
+   WORKVISTA — PROFESSIONAL FOOTER
+   ========================================================= */
+
+.footer {
+    position: relative;
+    background: #0d1729;
+    color: #e5eaf3;
+    padding: 58px 6% 0;
+    margin-top: 75px;
+    border-top: 1px solid rgba(243, 194, 102, 0.35);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Subtle background glow */
+.footer::before {
+    content: "";
+    position: absolute;
+    top: -150px;
+    right: -100px;
+    width: 350px;
+    height: 250px;
+    background: rgba(71, 103, 160, 0.12);
+    filter: blur(75px);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.footer-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1.2fr;
+    gap: 55px;
+}
+
+/* Individual sections */
+.footer-section {
+    min-width: 0;
+}
+
+/* Full-width heading underline */
+.footer-section h3 {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: 0.3px;
+    margin: 0 0 22px;
+    padding: 0 0 15px;
+    border-bottom: 2px solid rgba(243, 194, 102, 0.65);
+}
+
+/* About text */
+.footer-section p {
+    color: #b9c5d8;
+    font-size: 14px;
+    line-height: 1.95;
+    margin: 0;
+    max-width: 390px;
+}
+
+/* Remove browser-default list spacing */
+.footer-section ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Names and contact entries */
+.footer-section li {
+    position: relative;
+    color: #c7d1e0;
+    font-size: 13.5px;
+    line-height: 1.85;
+    margin: 0 0 13px;
+    padding: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Bullets immediately beside each team name */
+.footer-section .team-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 0;
+}
+
+.footer-section .team-list li::before {
+    content: "";
+    display: inline-block;
+    flex: 0 0 6px;
+    width: 6px;
+    height: 6px;
+    background: #f3c266;
+    border-radius: 50%;
+    position: relative;
+    top: -2px;
+}
+
+/* Contact names */
+.footer-section li strong {
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+/* Contact links */
+.footer-section a {
+    color: #e8bd70;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color 180ms ease;
+}
+
+.footer-section a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Gentle hover effect for names */
+.footer-section .team-list li:hover {
+    color: #ffffff;
+}
+
+/* Copyright strip */
+.footer-bottom {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 42px auto 0;
+    padding: 21px 0;
+    border-top: 1px solid rgba(190, 205, 226, 0.16);
+    text-align: center;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: #8796ad;
+    font-size: 12.5px;
+    line-height: 1.8;
+    letter-spacing: 0.25px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .footer {
+        padding: 45px 5% 0;
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 35px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+    .footer {
+        padding: 38px 22px 0;
+        margin-top: 50px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .footer-section h3 {
+        font-size: 16px;
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+    }
+
+    .footer-section p {
+        font-size: 13.5px;
+        text-align: left;
+    }
+
+    .footer-bottom {
+        margin-top: 30px;
+        padding: 18px 0;
+    }
+}
+
+.footer .footer-container .footer-section p {
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+
+.footer .contact-list .contact-row {
+    display: grid !important;
+    grid-template-columns: 65px minmax(0, 1fr) !important;
+    gap: 8px !important;
+    align-items: start !important;
+    margin: 0 0 12px !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.footer .contact-list .contact-row > span:first-child {
+    display: block;
+    white-space: nowrap;
+}
+
+.footer .contact-list .contact-row a {
+    overflow-wrap: anywhere;
+}

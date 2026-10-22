@@ -1,0 +1,159 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+
+<div class="section active" id="settings">
+
+    <header class="section-lede">
+        <h1>Set Preferences</h1>
+        <p>What you're looking for, and how we tell you about it.</p>
+    </header>
+
+    <section class="setting-block">
+        <div class="setting-intro">
+            <h2>Job preferences</h2>
+            <p>These decide what shows up in Recommended, and what we alert you about.</p>
+        </div>
+
+        <div class="insight-card profile-form-card">
+            <form method="post" action="{% url 'dashboard_settings' %}" class="profile-form">
+                {% csrf_token %}
+                <input type="hidden" name="update_preferences" value="1">
+
+                <div class="field">
+                    <label for="job_title">Preferred job title</label>
+                    <input type="text" id="job_title" name="job_title"
+                           value="{{ profile.job_title|default:'' }}"
+                           placeholder="e.g. Django Developer" required>
+                    <p class="field-error" id="job-title-error" hidden></p>
+                    <p class="field-hint">The single strongest signal we match on.</p>
+                </div>
+
+                <div class="field">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location"
+                           value="{{ profile.location|default:'' }}"
+                           placeholder="e.g. Lahore">
+                    <p class="field-error" id="location-error" hidden></p>
+                    <p class="field-hint">Remote roles reach you wherever you are.</p>
+                </div>
+
+                {% include "dashboard/_salary_field.html" %}
+
+                <div class="field">
+                    <label>Job type</label>
+                    <div class="filter-pills">
+                        {% for value, label in job_types %}
+                        <label class="pill">
+                            <input type="checkbox" name="job_type" value="{{ value }}"
+                                   {% if value in profile.job_type %}checked{% endif %}>
+                            {{ label }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <p class="field-hint">Pick any that apply, or none to see everything.</p>
+                </div>
+
+                <button type="submit" class="btn-primary">Save preferences</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="setting-block">
+        <div class="setting-intro">
+            <h2>Job alerts</h2>
+            <p>One email a day, only when something new actually matches.</p>
+        </div>
+
+        <div class="insight-card">
+            {# Its own form and its own marker field. An unchecked box  #}
+            {# submits nothing, so sharing a handler with the           #}
+            {# preferences form above would mean saving preferences     #}
+            {# silently switched this off.                              #}
+            <form method="post" action="{% url 'dashboard_settings' %}" id="alerts-form">
+                {% csrf_token %}
+                <input type="hidden" name="update_alerts" value="1">
+
+                <div class="switch-row">
+                    <label class="switch" for="email_job_alerts">
+                        <input type="checkbox" id="email_job_alerts" name="email_job_alerts"
+                               value="1" {% if profile.email_job_alerts %}checked{% endif %}
+                               onchange="document.getElementById('alerts-form').submit();">
+                        <span class="switch-track"><span class="switch-knob"></span></span>
+                        <span class="switch-label">Email me when new jobs match my profile</span>
+                    </label>
+
+                    {# Submits without JavaScript too - the switch just  #}
+                    {# becomes a checkbox and this button applies it.    #}
+                    <noscript><button type="submit" class="btn-outline btn-small">Apply</button></noscript>
+                </div>
+
+                <p class="field-hint switch-note">
+                    Your notifications stay on either way. This only controls email.
+                </p>
+            </form>
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector('form input[name="update_preferences"]').form;
+    const fields = [
+        {
+            input: form.elements.job_title,
+            error: document.getElementById("job-title-error"),
+            required: true,
+            allowed: /[^A-Za-z ,/-]/g,
+            pattern: /^[A-Za-z ,/-]*$/,
+            message: "Only alphabets, commas, / and - are allowed."
+        },
+        {
+            input: form.elements.location,
+            error: document.getElementById("location-error"),
+            required: false,
+            allowed: /[^A-Za-z ,]/g,
+            pattern: /^[A-Za-z ,]*$/,
+            message: "Only alphabets and commas are allowed."
+        }
+    ];
+
+    fields.forEach(function (field) {
+        field.input.addEventListener("input", function () {
+            const original = field.input.value;
+            field.input.value = original.replace(field.allowed, "");
+            if (field.input.value !== original) {
+                field.error.textContent = field.message;
+                field.error.hidden = false;
+            } else if (field.pattern.test(field.input.value)) {
+                field.error.hidden = true;
+            }
+        });
+        field.input.addEventListener("blur", function () {
+            field.input.value = field.input.value.replace(/^ +| +$/g, "");
+        });
+    });
+
+    form.addEventListener("submit", function (event) {
+        let valid = true;
+        fields.forEach(function (field) {
+            field.input.value = field.input.value.replace(/^ +| +$/g, "");
+            const emptyRequired = field.required && !field.input.value;
+            if (emptyRequired || !field.pattern.test(field.input.value)) {
+                field.error.textContent = emptyRequired ? "This field is required." : field.message;
+                field.error.hidden = false;
+                valid = false;
+            } else {
+                field.error.hidden = true;
+            }
+        });
+        if (!valid) event.preventDefault();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkVista</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% include "partials/icon_sprite.html" %}
+
+{% block navbar %}
+{# Pages rendered inside the dashboard shell supply their own sidebar, so #}
+{# this navbar is suppressed for them. search_jobs used to be listed here #}
+{# too, but it extends base.html rather than the dashboard shell - it got #}
+{# neither navbar nor sidebar and left the visitor with no way out.       #}
+{# Note this is a substring test, not a list membership test.             #}
+{% if request.resolver_match.url_name not in "dashboard profile saved_jobs" %}
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{% url 'home' %}" class="logo">
+            <img src="{% static 'images/logo.png' %}"
+     alt="WorkVista Logo"
+     style="width: 45px; height: 45px; object-fit: contain;">
+            <h2>WorkVista</h2>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" onclick="const n=this.nextElementSibling;const open=n.classList.toggle('open');this.setAttribute('aria-expanded',open);">
+            <svg class="icon"><use href="#icon-menu"></use></svg>
+        </button>
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}" class="btn{% if request.resolver_match.url_name == 'home' %} active{% endif %}">Home</a>
+            <a href="{% url 'trending_jobs' %}" class="btn{% if request.resolver_match.url_name == 'trending_jobs' %} active{% endif %}">Trending Jobs</a>
+            {# Shown to everyone, because it is how an employer finds   #}
+            {# the product. Where it goes depends on who is clicking: a  #}
+            {# signed-out visitor has no account to post from, so they   #}
+            {# get employer signup. A signed-in job seeker lands on      #}
+            {# post_job, which explains that posting needs an employer   #}
+            {# account rather than silently doing nothing.               #}
+            {% if user.is_authenticated %}
+            <a href="{% url 'post_job' %}" class="btn btn-post-job{% if request.resolver_match.url_name == 'post_job' %} active{% endif %}">Post a Job</a>
+            {% else %}
+            <a href="{% url 'signup_employer' %}" class="btn btn-post-job{% if request.resolver_match.url_name == 'signup_employer' %} active{% endif %}">Post a Job</a>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn">Dashboard</a>
+            <form method="post" action="{% url 'logout' %}" class="nav-logout-form">
+                {% csrf_token %}
+                <button type="submit" class="btn">Logout</button>
+            </form>
+            {% else %}
+            <a href="{% url 'signin' %}" class="btn{% if request.resolver_match.url_name == 'signin' %} active{% endif %}">Sign In</a>
+            <a href="{% url 'signup' %}" class="btn{% if request.resolver_match.url_name == 'signup' %} active{% endif %}">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% if messages %}
+<div class="toast-stack" role="status" aria-live="polite">
+    {% for message in messages %}
+    <div class="toast toast--{{ message.tags }}">
+        <svg class="icon"><use href="#icon-{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}"></use></svg>
+        <span>{{ message }}</span>
+        <button type="button" class="toast__close" aria-label="Dismiss" onclick="this.parentElement.remove()">
+            <svg class="icon"><use href="#icon-close"></use></svg>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<script src="{% static 'js/toast.js' %}"></script>
+<script src="{% static 'js/job-cards.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

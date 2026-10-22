@@ -1,0 +1,250 @@
+{% extends 'dashboard/base_employer.html' %}
+{% load static %}{% load job_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/post_job.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="post-job-wrapper">
+
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-briefcase"></use></svg> {% if editing_job %}Edit your job post{% else %}Post a job{% endif %}</h1>
+            <p class="subtitle">{% if editing_job %}Update the details of "{{ editing_job.title }}".{% else %}Share an opening with the WorkVista community.{% endif %}</p>
+        </div>
+    </div>
+
+    <form method="post"
+          class="post-job-form"
+          action="{% if editing_job %}{% url 'edit_posted_job' editing_job.id %}{% else %}{% url 'post_job' %}{% endif %}">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="form-errors">
+            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form-grid">
+
+            <div class="form-row form-row-wide">
+                <label for="{{ form.title.id_for_label }}">Job title</label>
+                {{ form.title }}
+                {% for error in form.title.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                <p id="job-title-input-error" class="field-error" role="alert" aria-live="polite" hidden></p>
+            </div>
+
+            <div class="form-row">
+                <label>Company</label>
+                <div class="locked-value">
+                    <svg class="icon"><use href="#icon-building"></use></svg> {{ company.name }}
+                </div>
+                <p class="field-hint">Every job you post is listed under your company.</p>
+            </div>
+
+            <div class="form-row">
+                {% if branches %}
+                <label for="{{ form.branch.id_for_label }}">Office</label>
+                {{ form.branch }}
+                <p class="field-hint">Which of your offices this opening is at.</p>
+                {% else %}
+                {# One office means no decision to make, so it renders as #}
+                {# a locked value with a hidden field rather than a       #}
+                {# dropdown with a single option.                         #}
+                <label>Location</label>
+                <div class="locked-value">
+                    <svg class="icon"><use href="#icon-pin"></use></svg> {{ company.location }}
+                </div>
+                <input type="hidden" name="branch" value="">
+                <p class="field-hint">
+                    Your head office. <a href="{% url 'employer_branches' %}">Add a branch</a> to post elsewhere.
+                </p>
+                {% endif %}
+                {% for error in form.branch.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.category.id_for_label }}">Job field category</label>
+                {{ form.category }}
+                {% for error in form.category.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.job_type.id_for_label }}">Job type</label>
+                {{ form.job_type }}
+                {% for error in form.job_type.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="form-row form-row-wide">
+                <label for="{{ form.description.id_for_label }}">Job description</label>
+                {{ form.description }}
+                {% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                <p id="job-description-input-error" class="field-error" role="alert" aria-live="polite" hidden></p>
+            </div>
+
+            <div class="form-row form-row-wide salary-block">
+                <label for="{{ form.salary_min.id_for_label }}">Salary Range</label>
+
+                <div class="salary-inputs">
+                    {{ form.salary_currency }}
+                    <div class="salary-range">
+                        {{ form.salary_min }}
+                        <span class="salary-range-separator" aria-hidden="true">-</span>
+                        {{ form.salary_max }}
+                    </div>
+                    <span class="salary-monthly">/month</span>
+                </div>
+
+                {% for error in form.salary_min.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                {% for error in form.salary_max.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                {% for error in form.salary_currency.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                <p id="salary-range-error" class="field-error" role="alert" aria-live="polite" hidden>
+                    Minimum salary cannot be greater than maximum salary.
+                </p>
+            </div>
+
+            <div class="form-row">
+                <label for="{{ form.job_link.id_for_label }}">Apply link</label>
+                {{ form.job_link }}
+                {% for error in form.job_link.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="form-row">
+                <label>Source</label>
+                <div class="source-locked">
+                    <svg class="icon"><use href="#icon-briefcase"></use></svg> WorkVista
+                </div>
+                <p class="field-hint">Jobs posted here are listed with WorkVista as the source.</p>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">{% if editing_job %}Save changes{% else %}Post job{% endif %}</button>
+            {% if editing_job %}
+            <a href="{% url 'post_job' %}" class="btn-outline">Cancel</a>
+            {% endif %}
+        </div>
+    </form>
+
+
+    <p class="extra">
+        <a href="{% url 'employer_postings' %}" class="view-more-btn">
+            See everything you've posted <svg class="icon"><use href="#icon-chevron-right"></use></svg>
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const form = document.querySelector('.post-job-form');
+    const minimum = document.getElementById('{{ form.salary_min.id_for_label }}');
+    const maximum = document.getElementById('{{ form.salary_max.id_for_label }}');
+    const rangeError = document.getElementById('salary-range-error');
+    const title = document.getElementById('{{ form.title.id_for_label }}');
+    const description = document.getElementById('{{ form.description.id_for_label }}');
+    const titleError = document.getElementById('job-title-input-error');
+    const descriptionError = document.getElementById('job-description-input-error');
+    const titleMessage = 'Job title must be 3-100 characters, contain letters, and use only letters, spaces, hyphens, slashes, &, periods, or commas.';
+    const descriptionMessage = 'Job description must be 20-3000 characters and contain at least one letter.';
+
+    function filterText(input, invalidCharacters, error) {
+        const value = input.value;
+        const cursor = input.selectionStart;
+        const filtered = value.replace(invalidCharacters, '');
+        if (value !== filtered) {
+            const filteredCursor = value.slice(0, cursor).replace(invalidCharacters, '').length;
+            input.value = filtered;
+            input.setSelectionRange(filteredCursor, filteredCursor);
+            error.textContent = titleMessage;
+            error.hidden = false;
+        } else {
+            error.hidden = true;
+        }
+    }
+
+    function validateTitle() {
+        title.value = title.value.trim();
+        const valid = title.value.length >= 3 && title.value.length <= 100
+            && /[A-Za-z]/.test(title.value)
+            && /^[A-Za-z \/&.,-]+$/.test(title.value);
+        titleError.textContent = valid ? '' : titleMessage;
+        titleError.hidden = valid;
+        return valid;
+    }
+
+    function validateDescription() {
+        description.value = description.value.trim();
+        const valid = description.value.length >= 20
+            && description.value.length <= 3000 && /[A-Za-z]/.test(description.value);
+        descriptionError.textContent = valid ? '' : descriptionMessage;
+        descriptionError.hidden = valid;
+        return valid;
+    }
+
+    function validateTextFields() {
+        const validTitle = validateTitle();
+        const validDescription = validateDescription();
+        return validTitle && validDescription;
+    }
+
+    title.addEventListener('input', function () {
+        filterText(title, /[^A-Za-z \/&.,-]/g, titleError);
+    });
+    title.addEventListener('blur', validateTitle);
+    description.addEventListener('blur', validateDescription);
+    description.addEventListener('input', function () {
+        descriptionError.hidden = true;
+    });
+    form.addEventListener('invalid', function (event) {
+        if (event.target === title) {
+            validateTitle();
+        } else if (event.target === description) {
+            validateDescription();
+        }
+    }, true);
+
+    [minimum, maximum].filter(Boolean).forEach(function (amount) {
+        amount.addEventListener('input', validateSalaryRange);
+    });
+
+    function validateSalaryRange() {
+        const minimumValue = minimum.value.trim();
+        const maximumValue = maximum.value.trim();
+        const bothAreIntegers = /^[+-]?\d+$/.test(minimumValue)
+            && /^[+-]?\d+$/.test(maximumValue);
+        const invalid = minimumValue !== ''
+            && maximumValue !== ''
+            && bothAreIntegers
+            && BigInt(minimumValue) > BigInt(maximumValue);
+        maximum.setCustomValidity(
+            invalid ? 'Minimum salary cannot be greater than maximum salary.' : ''
+        );
+        rangeError.hidden = !invalid;
+        return invalid;
+    }
+
+    form.addEventListener('submit', function (event) {
+        if (!validateTextFields()) {
+            event.preventDefault();
+            if (!titleError.hidden) {
+                title.focus();
+            } else {
+                description.focus();
+            }
+        }
+        if (validateSalaryRange()) {
+            event.preventDefault();
+            maximum.reportValidity();
+        }
+    });
+    validateSalaryRange();
+})();
+</script>
+{% endblock %}

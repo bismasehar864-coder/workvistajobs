@@ -1,0 +1,41 @@
+/* Keep the shared salary control in one row on the onboarding page. */
+
+.onboarding-main .salary-field {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.onboarding-main .salary-field select {
+    flex: 0 0 96px;
+    width: 96px;
+    min-width: 0;
+}
+
+.onboarding-main .salary-field input {
+    flex: 0 1 170px;
+    width: 170px;
+    min-width: 0;
+    max-width: 170px;
+}
+
+.onboarding-main .salary-suffix {
+    white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+    .onboarding-main .salary-field select {
+        flex-basis: 72px;
+        width: 72px;
+    }
+
+    .onboarding-main .salary-field input {
+        flex-basis: 70px;
+        padding-right: 0.45rem;
+        padding-left: 0.45rem;
+    }
+}

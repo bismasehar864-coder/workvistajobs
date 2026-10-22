@@ -1,0 +1,314 @@
+/* ============================================================
+   Auth shell — shared by signin, signup and password-reset
+   Same illustration style for Sign In, Sign Up and Post a Job
+   ============================================================ */
+
+.auth-shell {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3.5rem 1.5rem;
+    background: var(--mist);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 960px;
+    min-height: 580px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--paper);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lift);
+}
+
+/* ============================================================
+   Shared illustration panel
+   ============================================================ */
+
+.auth-illustration {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    min-width: 0;
+    min-height: 0;
+    padding: 1.5rem;
+    color: #fff;
+    isolation: isolate;
+    background-image: url("../images/form.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.auth-illustration > svg {
+    display: none;
+}
+
+/* Default image settings for Sign In and Sign Up */
+
+.vista-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+    z-index: -2;
+}
+
+/* ============================================================
+   Post a Job ONLY — image fix
+   ============================================================ */
+
+.post-job-illustration {
+    position: relative;
+    overflow: hidden;
+    background-color: #0e1f35;
+    background-image: url("../images/form.jpg");
+    background-size: 115%;
+    background-position: center 32%;
+    background-repeat: no-repeat;
+}
+
+/* Fill the Post a Job illustration panel */
+
+.post-job-illustration > svg {
+    position: absolute;
+    inset: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    z-index: -2;
+}
+
+/* Dark gradient behind the text */
+
+.auth-illustration::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(16, 25, 43, 0.92) 0%,
+        rgba(16, 25, 43, 0.50) 40%,
+        rgba(16, 25, 43, 0.05) 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Heading and paragraph */
+
+.auth-illustration .copy {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 320px;
+    margin: 0;
+}
+
+.auth-illustration h3 {
+    font-family: var(--font-display);
+    color: #fff;
+    font-size: 1.3rem;
+    line-height: 1.35;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+}
+
+.auth-illustration p {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ============================================================
+   Form panel
+   ============================================================ */
+
+.auth-form-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+}
+
+.form-box {
+    width: 100%;
+    max-width: 380px;
+}
+
+.form-box h2 {
+    margin-bottom: 0.3rem;
+}
+
+.form-box .subtitle {
+    color: var(--slate-soft);
+    margin-bottom: 1.8rem;
+}
+
+.form-box form {
+    text-align: left;
+}
+
+.field-error {
+    color: var(--coral);
+    font-size: 0.82rem;
+    margin: -0.75rem 0 0.9rem;
+}
+
+.error-msg {
+    background: var(--coral-soft);
+    color: #96271b;
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.form-box button[type="submit"] {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.extra {
+    margin-top: 1.4rem;
+    font-size: 0.88rem;
+    color: var(--slate-soft);
+    text-align: center;
+}
+
+.extra a {
+    color: var(--horizon);
+    font-weight: 600;
+}
+
+.extra a:hover {
+    text-decoration: underline;
+}
+
+/* Django form inputs */
+
+.field input {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    transition:
+        border-color 160ms var(--ease),
+        box-shadow 160ms var(--ease);
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--horizon-light);
+    box-shadow: 0 0 0 4px rgba(71, 103, 160, 0.15);
+}
+
+/* ============================================================
+   Simple confirmation pages
+   ============================================================ */
+
+.auth-confirm {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.auth-confirm .icon-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--meadow-soft);
+    color: var(--meadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+}
+
+.auth-confirm .icon-badge .icon {
+    width: 1.6em;
+    height: 1.6em;
+}
+
+.auth-confirm .card {
+    max-width: 380px;
+}
+
+/* ============================================================
+   Responsive layout
+   ============================================================ */
+
+@media (max-width: 880px) {
+    .auth-shell {
+        padding: 0;
+        align-items: flex-start;
+        min-height: 0;
+    }
+
+    .auth-card {
+        grid-template-columns: 1fr;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 0;
+    }
+
+    .auth-illustration {
+        display: none;
+    }
+
+    .auth-form-panel {
+        align-items: flex-start;
+        padding-top: 3rem;
+    }
+}
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 45px;
+    box-sizing: border-box;
+}
+
+.password-wrapper .toggle-password {
+    position: absolute; 
+    top: 50%;
+    right: 12px; 
+    transform: translateY(-50%); 
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 4px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2;
+    line-height: 1;
+    font-size: 17px; 
+    color: #64748b;
+} 
+.password-wrapper .toggle-password:hover { 
+    color: #2563eb; 
+} 

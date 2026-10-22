@@ -1,0 +1,76 @@
+{% extends 'dashboard/base_employer.html' %}
+{% block dashboard_content %}
+
+<div class="section active" id="branches">
+    <h1><svg class="icon"><use href="#icon-pin"></use></svg> Branches</h1>
+    <p class="subtitle">
+        Extra offices you hire for. When you post a job you can pick
+        which one it's at - or leave it at your head office in
+        {{ company.location }}.
+    </p>
+
+    <div class="insight-card">
+        <h2>Add a branch</h2>
+        <form method="post" class="branch-form" action="{% url 'employer_branches' %}">
+            {% csrf_token %}
+            <div class="branch-item">
+                <div class="field">
+                    <label for="{{ form.name.id_for_label }}">Branch name</label>
+                    {{ form.name }}
+                    {% for error in form.name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                </div>
+                <div class="field">
+                    <label for="{{ form.location.id_for_label }}">Branch location</label>
+                    {{ form.location }}
+                    {% for error in form.location.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                </div>
+                <div class="branch-actions">
+                    <button type="submit" class="btn-primary btn-small">Add</button>
+                </div>
+            </div>
+            {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </form>
+    </div>
+
+    <h2>Your branches</h2>
+
+    <div class="branch-list">
+        {% for branch in branches %}
+        <div class="insight-card">
+            <form method="post" action="{% url 'employer_branch_edit' branch.id %}">
+                {% csrf_token %}
+                <div class="branch-item">
+                    <div class="field">
+                        <label for="branch-name-{{ branch.id }}">Branch name</label>
+                        <input type="text" id="branch-name-{{ branch.id }}" name="name"
+                               value="{{ branch.name }}" class="input-field" required>
+                    </div>
+                    <div class="field">
+                        <label for="branch-location-{{ branch.id }}">Branch location</label>
+                        <input type="text" id="branch-location-{{ branch.id }}" name="location"
+                               value="{{ branch.location }}" class="input-field" required>
+                    </div>
+                    <div class="branch-actions">
+                        <button type="submit" class="btn-outline btn-small">Save</button>
+                    </div>
+                </div>
+            </form>
+
+            <form method="post"
+                  action="{% url 'employer_branch_delete' branch.id %}"
+                  onsubmit="return confirm('Remove &quot;{{ branch.name|escapejs }}&quot;? Jobs already posted from it stay live.');">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger btn-small">Remove branch</button>
+            </form>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg class="icon"><use href="#icon-pin"></use></svg>
+            <h3>No branches yet</h3>
+            <p>Every job you post will be listed at your head office in {{ company.location }}.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

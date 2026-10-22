@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="auth-shell">
+  <div class="auth-card auth-card-narrow">
+    <div class="auth-form-panel">
+        <div class="form-box">
+            <h2>Posting jobs is for employer accounts</h2>
+            <p class="subtitle">
+                Your account is set up for finding work, so it doesn't
+                have a company to post under. Employer accounts have a
+                company profile, branch offices, and their own dashboard.
+            </p>
+            <a href="{% url 'dashboard' %}" class="btn-primary">Back to my dashboard</a>
+            <p class="extra">
+                Hiring as well? <a href="{% url 'signup' %}">Create an employer account</a>.
+            </p>
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

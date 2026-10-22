@@ -1,0 +1,34 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block dashboard_content %}
+
+<div class="search-wrapper">
+    <div class="section-head">
+        <div>
+            <h1><svg class="icon"><use href="#icon-search"></use></svg> Find your dream job</h1>
+            <p class="subtitle">Search jobs based on your skills and preferences</p>
+        </div>
+    </div>
+    <form method="get" class="search-bar" action="{% url 'search_jobs' %}">
+        <select name="type">
+            <option value="">Job type</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Remote">Remote</option>
+                    <option value="Contract">Contract</option>
+        </select>
+        <button type="submit" class="btn-primary">Search</button>
+    </form>
+
+    <div class="job-grid">
+        <div class="job-card">
+            <div class="job-top">
+                <div class="job-icon icon-blue"><svg class="icon"><use href="#icon-briefcase"></use></svg></div>
+            </div>
+            <h3>Frontend Developer</h3>
+            <p class="job-meta"><svg class="icon"><use href="#icon-pin"></use></svg> Lahore</p>
+            <div class="job-tags"><span class="tag">Full-time</span><span class="tag">React</span><span class="tag">CSS</span></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
