@@ -78,7 +78,7 @@ DEBUG = env_bool("WORKVISTA_DEBUG", True)
 
 # Comma-separated in .env. Django only enforces this when DEBUG is off,
 # so an empty list is fine for local development.
-ALLOWED_HOSTS = env_list("WORKVISTA_ALLOWED_HOSTS")
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
