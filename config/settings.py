@@ -108,6 +108,11 @@ MIDDLEWARE = [
     # earlier; it only starts a background thread and returns.
     'jobs.refresh.JobRefreshMiddleware',
     'jobs.middleware.NoStoreMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <--- Add this line here
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # ... (keep the rest of your middleware)
 ]
 
 ROOT_URLCONF = 'config.urls'
