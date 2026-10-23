@@ -9,7 +9,7 @@ venv311/
 
 # Django
 db.sqlite3
-media/cvs/
+
 staticfiles/
 
 # Database dumps containing real user rows
