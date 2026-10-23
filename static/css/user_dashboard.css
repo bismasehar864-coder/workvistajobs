@@ -64,7 +64,12 @@
 
 .sidebar ul li a.active { background: var(--gold); color: var(--ink); }
 
-.sidebar .logout { margin-top: auto; padding-top: 1rem; }
+.sidebar .logout {
+    margin: auto -1.2rem -1.6rem;
+  padding: 1rem 1.2rem 1.6rem;
+  background: var(--ink-soft);
+  flex-shrink: 0;
+}
 
 .logout-btn {
   width: 100%;
