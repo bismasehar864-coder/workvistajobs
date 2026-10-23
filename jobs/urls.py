@@ -1,4 +1,6 @@
-from django.urls import path
+from django.conf import settings
+from django.urls import path, re_path
+from django.views.static import serve
 from . import views, views_employer, views_alerts, views_settings
 
 
@@ -80,11 +82,6 @@ urlpatterns = [
     ),
 
     # USER DASHBOARD
-    #
-    # Every tab is a real address rather than a fragment, so clicking
-    # updates the URL, reloading stays put, a link can be shared, and a
-    # form can redirect back to the tab it lives in. The bare path opens
-    # My Profile.
     path(
         "dashboard/user/",
         views.user_dashboard,
@@ -204,11 +201,6 @@ urlpatterns = [
     # =====================================================
     # EMPLOYER DASHBOARD
     # =====================================================
-    #
-    # Same contract as the user dashboard: every section is a real
-    # address, so clicking updates the URL, reloading stays put, and a
-    # form redirects back to the section it lives in. The bare path
-    # opens the company profile.
 
     path(
         "dashboard/employer/",
@@ -337,7 +329,6 @@ urlpatterns = [
     # SCRAPER MANAGEMENT
     # =====================================================
 
-    # Used by BOTH Admin and Super Admin
     path(
         "dashboard/superadmin/run-scraper/<str:scraper_name>/",
         views.run_scraper,
@@ -393,4 +384,11 @@ urlpatterns = [
         views.edit_cv_data,
         name="edit_cv_data"
     ),
+
+
+    # =====================================================
+    # MEDIA FILES SERVING (PRODUCTION & DEVELOPMENT)
+    # =====================================================
+
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
