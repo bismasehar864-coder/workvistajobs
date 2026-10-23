@@ -24,6 +24,13 @@ urlpatterns = [
     path('', include('jobs.urls')),
     path('admin/', admin.site.urls),
 
+    # Add this at the bottom so Render serves uploads when DEBUG = False:
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]
+
     # PASSWORD RESET
     path('password-reset/', auth_views.PasswordResetView.as_view(
         template_name='password_reset.html'
